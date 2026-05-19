@@ -1,778 +1,631 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>사이버 불판 도게자 — 긴급 사죄 방송</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700;800&family=DotGothic16&family=Noto+Serif+KR:wght@700;900&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --ink: #0a0508;
-        --ember: #ff6a1a;
-        --flame: #ffb347;
-        --hot: #fff2c4;
-        --blood: #c8102e;
-        --bone: #f6e9d2;
-        --neon: #00fff0;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>사이버 불판 도게자 — 긴급 사죄 방송</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700;800&family=DotGothic16&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0508;
+    --ember: #ff6a1a;
+    --flame: #ffb347;
+    --hot: #fff2c4;
+    --blood: #c8102e;
+    --bone: #f6e9d2;
+    --neon: #00fff0;
+  }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      html,
-      body {
-        height: 100%;
-        overflow: hidden;
-        background: var(--ink);
-        color: var(--bone);
-        font-family: "Noto Serif KR", serif;
-        cursor: crosshair;
-      }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--bone);
+    font-family: 'Noto Serif KR', serif;
+    cursor: crosshair;
+  }
 
-      /* ===== Scanline + CRT vignette ===== */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: repeating-linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0) 0px,
-          rgba(0, 0, 0, 0) 2px,
-          rgba(0, 0, 0, 0.18) 3px,
-          rgba(0, 0, 0, 0) 4px
-        );
-        pointer-events: none;
-        z-index: 50;
-        mix-blend-mode: multiply;
-      }
-      body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(
-          ellipse at center,
-          transparent 40%,
-          rgba(0, 0, 0, 0.85) 100%
-        );
-        pointer-events: none;
-        z-index: 49;
-      }
+  /* ===== Scanline + CRT vignette (overlay, never shakes) ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.18) 3px,
+      rgba(0,0,0,0) 4px
+    );
+    pointer-events: none;
+    z-index: 50;
+    mix-blend-mode: multiply;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+    z-index: 49;
+  }
 
-      /* ===== Background grid (cyber) ===== */
-      .grid {
-        position: fixed;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(255, 90, 30, 0.06) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 90, 30, 0.06) 1px, transparent 1px);
-        background-size: 40px 40px;
-        transform: perspective(600px) rotateX(60deg) translateY(20%);
-        transform-origin: center bottom;
-        z-index: 1;
-        animation: gridShift 8s linear infinite;
-      }
-      @keyframes gridShift {
-        0% {
-          background-position: 0 0;
-        }
-        100% {
-          background-position: 0 40px;
-        }
-      }
+  /* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
+  .scene {
+    position: fixed;
+    inset: 0;
+  }
+  .scene.shake { animation: screenShake 0.35s ease-out; }
+  @keyframes screenShake {
+    0%, 100% { transform: translate(0, 0); }
+    15%      { transform: translate(-5px, 2px) rotate(-0.3deg); }
+    30%      { transform: translate( 5px, -2px) rotate(0.3deg); }
+    45%      { transform: translate(-3px, 1px); }
+    60%      { transform: translate( 3px, -1px); }
+    75%      { transform: translate(-2px, 0); }
+  }
 
-      /* ===== Hellfire glow at bottom ===== */
-      .glow {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: -10vh;
-        height: 60vh;
-        background: radial-gradient(
-          ellipse at center top,
-          transparent 0%,
-          transparent 35%,
-          var(--ember) 60%,
-          var(--blood) 90%
-        );
-        filter: blur(60px);
-        opacity: 0.7;
-        z-index: 2;
-        animation: pulse 3s ease-in-out infinite alternate;
-      }
-      @keyframes pulse {
-        from {
-          opacity: 0.5;
-          transform: scaleY(0.95);
-        }
-        to {
-          opacity: 0.9;
-          transform: scaleY(1.05);
-        }
-      }
+  /* ===== Background grid (cyber) ===== */
+  .grid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 90, 30, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 90, 30, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(600px) rotateX(60deg) translateY(20%);
+    transform-origin: center bottom;
+    z-index: 1;
+    animation: gridShift 8s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+  }
 
-      /* ===== Flames (the 불판) ===== */
-      .flames {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 35vh;
-        z-index: 3;
-        pointer-events: none;
-        overflow: hidden;
-      }
-      .flame {
-        position: absolute;
-        bottom: -20px;
-        width: 80px;
-        height: 160px;
-        background: radial-gradient(
-          circle at 50% 80%,
-          var(--hot) 0%,
-          var(--flame) 30%,
-          var(--ember) 60%,
-          transparent 75%
-        );
-        filter: blur(8px);
-        border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
-        mix-blend-mode: screen;
-        animation: flicker 1.2s ease-in-out infinite alternate;
-      }
-      @keyframes flicker {
-        0% {
-          transform: translateY(0) scale(1, 1) skewX(-2deg);
-          opacity: 0.85;
-        }
-        50% {
-          transform: translateY(-12px) scale(1.1, 1.15) skewX(3deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(-4px) scale(0.95, 0.9) skewX(-4deg);
-          opacity: 0.7;
-        }
-      }
+  /* ===== Hellfire glow at bottom ===== */
+  .glow {
+    position: fixed;
+    left: 0; right: 0; bottom: -10vh;
+    height: 60vh;
+    background: radial-gradient(ellipse at center top, transparent 0%, transparent 35%, var(--ember) 60%, var(--blood) 90%);
+    filter: blur(60px);
+    opacity: 0.7;
+    z-index: 2;
+    animation: pulse 3s ease-in-out infinite alternate;
+  }
+  @keyframes pulse {
+    from { opacity: 0.5; transform: scaleY(0.95); }
+    to   { opacity: 0.9; transform: scaleY(1.05); }
+  }
 
-      /* ===== 불판 (the grill itself) ===== */
-      .grill {
-        position: fixed;
-        left: 50%;
-        bottom: 6vh;
-        transform: translateX(-50%);
-        width: min(720px, 90vw);
-        height: 26px;
-        background: linear-gradient(
-          to bottom,
-          #2a1208 0%,
-          #5a2410 40%,
-          #1a0804 100%
-        );
-        border-radius: 6px;
-        box-shadow:
-          inset 0 2px 0 rgba(255, 180, 100, 0.3),
-          inset 0 -4px 12px rgba(0, 0, 0, 0.8),
-          0 -4px 30px rgba(255, 90, 0, 0.6),
-          0 8px 24px rgba(0, 0, 0, 0.9);
-        z-index: 6;
-      }
-      .grill::before {
-        content: "";
-        position: absolute;
-        inset: 4px 8px;
-        background: repeating-linear-gradient(
-          90deg,
-          transparent 0,
-          transparent 18px,
-          rgba(255, 200, 100, 0.4) 18px,
-          rgba(255, 200, 100, 0.4) 20px
-        );
-        border-radius: 3px;
-      }
+  /* ===== Flames ===== */
+  .flames {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 35vh;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .flame {
+    position: absolute;
+    bottom: -20px;
+    width: 80px;
+    height: 160px;
+    background: radial-gradient(circle at 50% 80%, var(--hot) 0%, var(--flame) 30%, var(--ember) 60%, transparent 75%);
+    filter: blur(8px);
+    border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+    mix-blend-mode: screen;
+    animation: flicker 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes flicker {
+    0%   { transform: translateY(0) scale(1, 1)    skewX(-2deg); opacity: 0.85; }
+    50%  { transform: translateY(-12px) scale(1.1, 1.15) skewX(3deg);  opacity: 1;    }
+    100% { transform: translateY(-4px) scale(0.95, 0.9) skewX(-4deg); opacity: 0.7;  }
+  }
 
-      /* ===== Embers floating up ===== */
-      .ember {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: var(--hot);
-        border-radius: 50%;
-        box-shadow:
-          0 0 6px var(--ember),
-          0 0 12px var(--flame);
-        pointer-events: none;
-      }
+  /* ===== 불판 ===== */
+  .grill {
+    position: fixed;
+    left: 50%;
+    bottom: 6vh;
+    transform: translateX(-50%);
+    width: min(720px, 90vw);
+    height: 26px;
+    background: linear-gradient(to bottom, #2a1208 0%, #5a2410 40%, #1a0804 100%);
+    border-radius: 6px;
+    box-shadow:
+      inset 0 2px 0 rgba(255,180,100,0.3),
+      inset 0 -4px 12px rgba(0,0,0,0.8),
+      0 -4px 30px rgba(255, 90, 0, 0.6),
+      0 8px 24px rgba(0,0,0,0.9);
+    z-index: 6;
+  }
+  .grill::before {
+    content: '';
+    position: absolute;
+    inset: 4px 8px;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 18px,
+      rgba(255, 200, 100, 0.4) 18px,
+      rgba(255, 200, 100, 0.4) 20px
+    );
+    border-radius: 3px;
+  }
 
-      /* ===== Stage / Container ===== */
-      .stage {
-        position: relative;
-        z-index: 10;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 4vh 2rem 0;
-      }
+  .ember {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: var(--hot);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--ember), 0 0 12px var(--flame);
+    pointer-events: none;
+  }
 
-      /* ===== Headline ===== */
-      .badge {
-        font-family: "DotGothic16", monospace;
-        font-size: 0.75rem;
-        letter-spacing: 0.4em;
-        color: var(--neon);
-        padding: 6px 14px;
-        border: 1px solid var(--neon);
-        text-shadow: 0 0 8px var(--neon);
-        box-shadow:
-          0 0 12px rgba(0, 255, 240, 0.3),
-          inset 0 0 12px rgba(0, 255, 240, 0.1);
-        margin-bottom: 1.2rem;
-        animation: glitchBox 4s steps(1) infinite;
-      }
-      @keyframes glitchBox {
-        0%,
-        90%,
-        100% {
-          transform: translate(0);
-        }
-        92% {
-          transform: translate(-2px, 1px);
-        }
-        94% {
-          transform: translate(2px, -1px);
-        }
-        96% {
-          transform: translate(-1px, -1px);
-        }
-      }
+  /* ===== Stage ===== */
+  .stage {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4vh 2rem 0;
+    pointer-events: none;
+  }
 
-      h1 {
-        font-family: "Shippori Mincho", "Noto Serif KR", serif;
-        font-weight: 800;
-        font-size: clamp(3rem, 9vw, 7rem);
-        line-height: 0.95;
-        text-align: center;
-        color: var(--bone);
-        text-shadow:
-          0 0 1px var(--blood),
-          0 0 20px rgba(255, 100, 30, 0.6),
-          0 0 60px rgba(255, 60, 0, 0.4);
-        letter-spacing: 0.02em;
-        position: relative;
-      }
-      h1 .stamp {
-        display: inline-block;
-        color: var(--blood);
-        text-shadow:
-          0 0 12px var(--blood),
-          0 0 30px rgba(200, 0, 30, 0.5);
-        transform: rotate(-4deg);
-        margin: 0 0.1em;
-      }
-      h1::before {
-        content: "謝罪";
-        position: absolute;
-        top: -1.5rem;
-        right: -1rem;
-        font-size: 1rem;
-        color: var(--blood);
-        border: 2px solid var(--blood);
-        padding: 4px 8px;
-        transform: rotate(8deg);
-        text-shadow: none;
-        font-family: "Shippori Mincho", serif;
-        font-weight: 800;
-        opacity: 0.9;
-      }
+  .badge {
+    font-family: 'DotGothic16', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--neon);
+    padding: 6px 14px;
+    border: 1px solid var(--neon);
+    text-shadow: 0 0 8px var(--neon);
+    box-shadow: 0 0 12px rgba(0, 255, 240, 0.3), inset 0 0 12px rgba(0, 255, 240, 0.1);
+    margin-bottom: 1.2rem;
+    animation: glitchBox 4s steps(1) infinite;
+  }
+  @keyframes glitchBox {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-2px, 1px); }
+    94% { transform: translate(2px, -1px); }
+    96% { transform: translate(-1px, -1px); }
+  }
 
-      .subtitle {
-        margin-top: 1rem;
-        font-family: "DotGothic16", monospace;
-        font-size: clamp(0.85rem, 1.6vw, 1.1rem);
-        letter-spacing: 0.15em;
-        color: var(--flame);
-        text-align: center;
-        opacity: 0.9;
-      }
-      .subtitle .blink {
-        animation: blink 1s steps(1) infinite;
-      }
-      @keyframes blink {
-        50% {
-          opacity: 0;
-        }
-      }
+  h1 {
+    font-family: 'Shippori Mincho', 'Noto Serif KR', serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 0.95;
+    text-align: center;
+    color: var(--bone);
+    text-shadow:
+      0 0 1px var(--blood),
+      0 0 20px rgba(255, 100, 30, 0.6),
+      0 0 60px rgba(255, 60, 0, 0.4);
+    letter-spacing: 0.02em;
+    position: relative;
+  }
+  h1 .stamp {
+    display: inline-block;
+    color: var(--blood);
+    text-shadow: 0 0 12px var(--blood), 0 0 30px rgba(200,0,30,0.5);
+    transform: rotate(-4deg);
+    margin: 0 0.1em;
+  }
+  h1::before {
+    content: '謝罪';
+    position: absolute;
+    top: -1.5rem; right: -1rem;
+    font-size: 1rem;
+    color: var(--blood);
+    border: 2px solid var(--blood);
+    padding: 4px 8px;
+    transform: rotate(8deg);
+    text-shadow: none;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 800;
+    opacity: 0.9;
+  }
 
-      /* ===== Dogeza figure ===== */
-      .figure-wrap {
-        position: absolute;
-        left: 50%;
-        bottom: 10vh;
-        transform: translateX(-50%);
-        z-index: 7;
-        text-align: center;
-        pointer-events: none;
-      }
+  .subtitle {
+    margin-top: 1rem;
+    font-family: 'DotGothic16', monospace;
+    font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+    letter-spacing: 0.15em;
+    color: var(--flame);
+    text-align: center;
+    opacity: 0.9;
+  }
+  .subtitle .blink { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
 
-      .dogeza {
-        font-size: clamp(7rem, 16vw, 12rem);
-        line-height: 1;
-        display: inline-block;
-        transform-origin: bottom center;
-        /* 평상시 부들부들 떨림 (긴장감) */
-        animation: tremor 0.18s ease-in-out infinite alternate;
-        filter: drop-shadow(0 0 12px rgba(255, 130, 30, 0.9))
-          drop-shadow(0 0 32px rgba(255, 60, 0, 0.7))
-          drop-shadow(0 -10px 24px rgba(255, 180, 30, 0.5));
-      }
+  /* ===== Dogeza figure ===== */
+  .figure-wrap {
+    position: absolute;
+    left: 50%;
+    bottom: 10vh;
+    transform: translateX(-50%);
+    z-index: 7;
+    text-align: center;
+    pointer-events: none;
+  }
 
-      @keyframes tremor {
-        0% {
-          transform: translate(-0.4px, 0) rotate(-0.4deg);
-        }
-        100% {
-          transform: translate(0.4px, 0.5px) rotate(0.4deg);
-        }
-      }
+  .dogeza {
+    font-size: clamp(7rem, 16vw, 12rem);
+    line-height: 1;
+    display: inline-block;
+    transform-origin: bottom center;
+    animation: tremor 0.18s ease-in-out infinite alternate;
+    filter:
+      drop-shadow(0 0 12px rgba(255, 130, 30, 0.9))
+      drop-shadow(0 0 32px rgba(255, 60, 0, 0.7))
+      drop-shadow(0 -10px 24px rgba(255, 180, 30, 0.5));
+  }
 
-      /* 버튼 눌렀을 때: 더 깊게 눌러서 절하는 모션 */
-      .dogeza.bow {
-        animation: bowHarder 0.45s cubic-bezier(0.3, 1.4, 0.4, 1);
-      }
-      @keyframes bowHarder {
-        0% {
-          transform: translateY(0) scaleY(1) scaleX(1);
-        }
-        25% {
-          transform: translateY(-4px) scaleY(1.04) scaleX(0.98);
-        }
-        55% {
-          transform: translateY(6px) scaleY(0.88) scaleX(1.08);
-        }
-        80% {
-          transform: translateY(2px) scaleY(0.96) scaleX(1.02);
-        }
-        100% {
-          transform: translateY(0) scaleY(1) scaleX(1);
-        }
-      }
+  @keyframes tremor {
+    0%   { transform: translate(-0.4px, 0)   rotate(-0.4deg); }
+    100% { transform: translate( 0.4px, 0.5px) rotate( 0.4deg); }
+  }
 
-      /* 땀방울 */
-      .sweat {
-        position: absolute;
-        top: 18%;
-        right: 22%;
-        font-size: clamp(1.5rem, 3vw, 2.2rem);
-        animation: sweatDrop 1.8s ease-in infinite;
-        filter: drop-shadow(0 0 6px rgba(127, 223, 255, 0.8));
-      }
-      @keyframes sweatDrop {
-        0% {
-          transform: translateY(-10px) scale(0.4);
-          opacity: 0;
-        }
-        20% {
-          transform: translateY(-5px) scale(1);
-          opacity: 1;
-        }
-        80% {
-          transform: translateY(40px) scale(0.9);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(60px) scale(0.6);
-          opacity: 0;
-        }
-      }
+  .dogeza.bow { animation: bowHarder 0.45s cubic-bezier(.3, 1.4, .4, 1); }
+  @keyframes bowHarder {
+    0%   { transform: translateY(0)    scaleY(1)    scaleX(1); }
+    25%  { transform: translateY(-4px) scaleY(1.04) scaleX(0.98); }
+    55%  { transform: translateY(6px)  scaleY(0.88) scaleX(1.08); }
+    80%  { transform: translateY(2px)  scaleY(0.96) scaleX(1.02); }
+    100% { transform: translateY(0)    scaleY(1)    scaleX(1); }
+  }
 
-      /* 임팩트 라인 (만화풍 효과) */
-      .impact-lines {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 140%;
-        height: 140%;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.1s;
-      }
-      .impact-lines.flash {
-        opacity: 1;
-      }
-      .impact-lines span {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 60px;
-        height: 3px;
-        background: linear-gradient(to right, var(--hot), transparent);
-        transform-origin: left center;
-      }
-      .impact-lines span:nth-child(1) {
-        transform: translate(-50%, -50%) rotate(20deg) translateX(80px);
-      }
-      .impact-lines span:nth-child(2) {
-        transform: translate(-50%, -50%) rotate(-20deg) translateX(80px);
-      }
-      .impact-lines span:nth-child(3) {
-        transform: translate(-50%, -50%) rotate(160deg) translateX(80px);
-      }
-      .impact-lines span:nth-child(4) {
-        transform: translate(-50%, -50%) rotate(-160deg) translateX(80px);
-      }
+  .sweat {
+    position: absolute;
+    top: 18%;
+    right: 22%;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    animation: sweatDrop 1.8s ease-in infinite;
+    filter: drop-shadow(0 0 6px rgba(127, 223, 255, 0.8));
+  }
+  @keyframes sweatDrop {
+    0%   { transform: translateY(-10px) scale(0.4); opacity: 0; }
+    20%  { transform: translateY(-5px)  scale(1);   opacity: 1; }
+    80%  { transform: translateY(40px)  scale(0.9); opacity: 1; }
+    100% { transform: translateY(60px)  scale(0.6); opacity: 0; }
+  }
 
-      /* 화면 흔들림 (절할 때 충격) */
-      body.shake {
-        animation: screenShake 0.35s ease-out;
-      }
-      @keyframes screenShake {
-        0%,
-        100% {
-          transform: translate(0, 0);
-        }
-        15% {
-          transform: translate(-5px, 2px) rotate(-0.3deg);
-        }
-        30% {
-          transform: translate(5px, -2px) rotate(0.3deg);
-        }
-        45% {
-          transform: translate(-3px, 1px);
-        }
-        60% {
-          transform: translate(3px, -1px);
-        }
-        75% {
-          transform: translate(-2px, 0);
-        }
-      }
+  .impact-lines {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 140%; height: 140%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .impact-lines.flash { opacity: 1; }
+  .impact-lines span {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 60px; height: 3px;
+    background: linear-gradient(to right, var(--hot), transparent);
+    transform-origin: left center;
+  }
+  .impact-lines span:nth-child(1) { transform: translate(-50%, -50%) rotate(20deg)  translateX(80px); }
+  .impact-lines span:nth-child(2) { transform: translate(-50%, -50%) rotate(-20deg) translateX(80px); }
+  .impact-lines span:nth-child(3) { transform: translate(-50%, -50%) rotate(160deg) translateX(80px); }
+  .impact-lines span:nth-child(4) { transform: translate(-50%, -50%) rotate(-160deg) translateX(80px); }
 
-      /* ===== Bottom panel ===== */
-      .panel {
-        position: fixed;
-        left: 50%;
-        bottom: 1rem;
-        transform: translateX(-50%);
-        z-index: 20;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.6rem;
-      }
+  /* ===== Bottom panel (OUTSIDE .scene — doesn't shake) ===== */
+  .panel {
+    position: fixed;
+    left: 50%;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
 
-      .counter {
-        font-family: "DotGothic16", monospace;
-        font-size: 0.85rem;
-        color: var(--bone);
-        letter-spacing: 0.15em;
-        background: rgba(10, 5, 8, 0.7);
-        border: 1px solid rgba(255, 180, 100, 0.4);
-        padding: 6px 14px;
-        backdrop-filter: blur(6px);
-      }
-      .counter .num {
-        color: var(--flame);
-        font-size: 1.1rem;
-        text-shadow: 0 0 8px var(--ember);
-        margin: 0 0.3em;
-      }
+  button.bow-btn {
+    font-family: 'Shippori Mincho', 'Noto Serif KR', serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--bone);
+    background: linear-gradient(180deg, #1a0a08, #3a0e08);
+    border: 2px solid var(--blood);
+    padding: 8px 22px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    box-shadow:
+      0 0 0 1px rgba(255,180,100,0.2),
+      0 0 20px rgba(200, 16, 46, 0.6),
+      inset 0 0 20px rgba(255, 80, 30, 0.2);
+    text-shadow: 0 0 6px var(--ember);
+    transition: transform 0.1s, box-shadow 0.3s;
+  }
+  button.bow-btn:hover {
+    box-shadow:
+      0 0 0 1px rgba(255,180,100,0.4),
+      0 0 30px rgba(255, 60, 0, 0.9),
+      inset 0 0 30px rgba(255, 120, 30, 0.4);
+  }
+  button.bow-btn:active { transform: scale(0.96); }
 
-      button.bow-btn {
-        font-family: "Shippori Mincho", "Noto Serif KR", serif;
-        font-weight: 800;
-        font-size: 0.9rem;
-        color: var(--bone);
-        background: linear-gradient(180deg, #1a0a08, #3a0e08);
-        border: 2px solid var(--blood);
-        padding: 8px 22px;
-        letter-spacing: 0.2em;
-        cursor: pointer;
-        box-shadow:
-          0 0 0 1px rgba(255, 180, 100, 0.2),
-          0 0 20px rgba(200, 16, 46, 0.6),
-          inset 0 0 20px rgba(255, 80, 30, 0.2);
-        text-shadow: 0 0 6px var(--ember);
-        transition:
-          transform 0.1s,
-          box-shadow 0.3s;
-      }
-      button.bow-btn:hover {
-        box-shadow:
-          0 0 0 1px rgba(255, 180, 100, 0.4),
-          0 0 30px rgba(255, 60, 0, 0.9),
-          inset 0 0 30px rgba(255, 120, 30, 0.4);
-      }
-      button.bow-btn:active {
-        transform: scale(0.96);
-      }
+  /* ===== Side panels ===== */
+  .culprits {
+    position: fixed;
+    top: 50%;
+    right: 1.5rem;
+    transform: translateY(-50%);
+    z-index: 55;
+    font-family: 'DotGothic16', monospace;
+    font-size: 0.7rem;
+    color: rgba(246, 233, 210, 0.75);
+    letter-spacing: 0.1em;
+    text-align: right;
+    line-height: 1.8;
+    max-width: 200px;
+    padding: 10px 14px;
+    background: rgba(10, 5, 8, 0.45);
+    border: 1px solid rgba(200, 16, 46, 0.3);
+    backdrop-filter: blur(6px);
+  }
+  .culprits .label {
+    color: var(--blood);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    margin-bottom: 0.5rem;
+  }
+  .culprits .name { color: var(--flame); }
+  .culprits .strike { text-decoration: line-through; opacity: 0.5; }
 
-      /* ===== Side message ===== */
-      .culprits {
-        position: fixed;
-        top: 50%;
-        right: 1.5rem;
-        transform: translateY(-50%);
-        z-index: 15;
-        font-family: "DotGothic16", monospace;
-        font-size: 0.7rem;
-        color: rgba(246, 233, 210, 0.6);
-        letter-spacing: 0.1em;
-        text-align: right;
-        line-height: 1.8;
-        max-width: 200px;
-      }
-      .culprits .label {
-        color: var(--blood);
-        font-size: 0.65rem;
-        letter-spacing: 0.3em;
-        margin-bottom: 0.5rem;
-      }
-      .culprits .name {
-        color: var(--flame);
-      }
-      .culprits .strike {
-        text-decoration: line-through;
-        opacity: 0.5;
-      }
+  .receipt {
+    position: fixed;
+    top: 50%;
+    left: 1.5rem;
+    transform: translateY(-50%);
+    z-index: 55;
+    font-family: 'DotGothic16', monospace;
+    font-size: 0.7rem;
+    color: rgba(246, 233, 210, 0.85);
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+    max-width: 220px;
+    padding: 10px 14px;
+    background: rgba(10, 5, 8, 0.45);
+    border: 1px solid rgba(255, 180, 100, 0.3);
+    backdrop-filter: blur(6px);
+  }
+  .receipt .label {
+    color: var(--neon);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 6px var(--neon);
+  }
+  .receipt .row { display: flex; justify-content: space-between; gap: 1rem; }
+  .receipt .row .v { color: var(--flame); }
+  .receipt .row.divider {
+    border-top: 1px dashed rgba(255, 180, 100, 0.3);
+    padding-top: 0.5rem;
+    margin-top: 0.3rem;
+  }
+  #count, #timer {
+    text-shadow: 0 0 6px var(--ember);
+  }
 
-      .receipt {
-        position: fixed;
-        top: 50%;
-        left: 1.5rem;
-        transform: translateY(-50%);
-        z-index: 15;
-        font-family: "DotGothic16", monospace;
-        font-size: 0.7rem;
-        color: rgba(246, 233, 210, 0.7);
-        letter-spacing: 0.1em;
-        line-height: 1.8;
-        max-width: 220px;
-      }
-      .receipt .label {
-        color: var(--neon);
-        font-size: 0.65rem;
-        letter-spacing: 0.3em;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 0 6px var(--neon);
-      }
-      .receipt .row {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-      }
-      .receipt .row .v {
-        color: var(--flame);
-      }
-      .receipt .row.divider {
-        border-top: 1px dashed rgba(255, 180, 100, 0.3);
-        padding-top: 0.5rem;
-        margin-top: 0.3rem;
-      }
-      #count,
-      #timer {
-        text-shadow: 0 0 6px var(--ember);
-      }
+  /* ===== Mobile ===== */
+  @media (max-width: 720px) {
+    /* 데코 패널 숨김 */
+    .culprits { display: none; }
+    .mobile-hide { display: none; }
 
-      /* Mobile */
-      @media (max-width: 720px) {
-        .culprits,
-        .receipt {
-          position: relative;
-          top: auto;
-          left: auto;
-          right: auto;
-          transform: none;
-          max-width: none;
-          text-align: center;
-          margin-top: 1rem;
-          width: 100%;
-          font-size: 0.6rem;
-        }
-        .receipt .row {
-          justify-content: center;
-          gap: 1.5rem;
-          flex-wrap: wrap;
-        }
-        .stage {
-          padding-top: 1vh;
-        }
-        .figure-wrap {
-          width: 80vw;
-          bottom: 14vh;
-        }
-        .grill {
-          bottom: 11vh;
-        }
-        h1::before {
-          display: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="grid"></div>
-    <div class="glow"></div>
+    /* Receipt: 화면 상단 가로 스트립으로 변신 (count + timer만) */
+    .receipt {
+      position: fixed;
+      top: max(0.6rem, env(safe-area-inset-top));
+      left: 0.6rem;
+      right: 0.6rem;
+      bottom: auto;
+      transform: none;
+      max-width: none;
+      font-size: 0.6rem;
+      background: rgba(10, 5, 8, 0.65);
+      padding: 5px 12px;
+      border: 1px solid rgba(255, 180, 100, 0.3);
+      backdrop-filter: blur(8px);
+      line-height: 1.3;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      gap: 1rem;
+      z-index: 55;
+    }
+    .receipt .label { display: none; }
+    .receipt .row {
+      border: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      gap: 0.4rem;
+    }
+    .receipt .row span:first-child {
+      font-size: 0.55rem;
+      opacity: 0.7;
+    }
 
-    <!-- 불꽃들 -->
-    <div class="flames" id="flames"></div>
+    /* 타이틀 영역 축소 */
+    .stage { padding-top: 5vh; }
+    h1 { font-size: clamp(2.2rem, 11vw, 4rem); }
+    h1::before { display: none; }
+    .badge { font-size: 0.6rem; padding: 4px 10px; letter-spacing: 0.3em; }
+    .subtitle { font-size: 0.75rem; }
 
-    <!-- 불판 -->
-    <div class="grill"></div>
+    /* 인물 위치/크기 */
+    .figure-wrap { bottom: 13vh; }
+    .grill { bottom: 10vh; width: 85vw; }
+    .dogeza { font-size: clamp(5.5rem, 26vw, 9rem); }
 
-    <!-- 도게자 인물 -->
-    <div class="figure-wrap" id="figure">
-      <div class="dogeza" id="dogeza">🙇</div>
-      <div class="sweat">💦</div>
-      <div class="impact-lines">
-        <span></span><span></span><span></span><span></span>
-      </div>
+    /* 버튼 슬림하게 */
+    button.bow-btn { font-size: 0.85rem; padding: 7px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 흔들리는 씬 (버튼만 바깥) -->
+<div class="scene" id="scene">
+
+  <div class="grid"></div>
+  <div class="glow"></div>
+  <div class="flames" id="flames"></div>
+  <div class="grill"></div>
+
+  <!-- 도게자 인물 -->
+  <div class="figure-wrap" id="figure">
+    <div class="dogeza" id="dogeza">🙇</div>
+    <div class="sweat">💦</div>
+    <div class="impact-lines">
+      <span></span><span></span><span></span><span></span>
     </div>
+  </div>
 
-    <div class="stage">
-      <div class="badge">⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠</div>
-      <h1>사이버<span class="stamp">불판</span>도게자</h1>
-      <div class="subtitle">
-        [ 진심사죄 모드 가동중<span class="blink">_</span> ]
-      </div>
-
-      <!-- 죄목 리스트 -->
-      <div class="culprits">
-        <div class="label">사건 경위 / EVIDENCE</div>
-        AI 에이전트로 PR 양산<br />
-        <span class="name">Jules</span> · <span class="name">Codex</span> ·
-        <span class="name">Claude</span><br />
-        레포지토리 오염<br />
-        <span class="strike">변명의 여지 없음</span>
-      </div>
-
-      <!-- 영수증 -->
-      <div class="receipt">
-        <div class="label">// SAJOE.RECEIPT</div>
-        <div class="row">
-          <span>피해자</span><span class="v">선생님</span>
-        </div>
-        <div class="row"><span>가해자</span><span class="v">나</span></div>
-        <div class="row"><span>온도</span><span class="v">1200°C</span></div>
-        <div class="row"><span>상태</span><span class="v">정좌중</span></div>
-        <div class="row divider">
-          <span>절한 횟수</span
-          ><span class="v"><span id="count">1</span> 회</span>
-        </div>
-        <div class="row">
-          <span>체류시간</span><span class="v" id="timer">0:00</span>
-        </div>
-      </div>
+  <div class="stage">
+    <div class="badge">⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠</div>
+    <h1>사이버<span class="stamp">불판</span>도게자</h1>
+    <div class="subtitle">
+      [ 진심사죄 모드 가동중<span class="blink">_</span> ]
     </div>
+  </div>
 
-    <!-- 하단 패널 -->
-    <div class="panel">
-      <button class="bow-btn" id="bowBtn">한 번 더 사죄</button>
-    </div>
+</div>
+<!-- /.scene -->
 
-    <script>
-      // ===== Generate flames along the grill =====
-      const flames = document.getElementById("flames");
-      const flameCount = 28;
-      for (let i = 0; i < flameCount; i++) {
-        const f = document.createElement("div");
-        f.className = "flame";
-        const left = (i / (flameCount - 1)) * 100;
-        f.style.left = `calc(${left}% - 40px)`;
-        f.style.animationDelay = Math.random() * 1.2 + "s";
-        f.style.animationDuration = 0.8 + Math.random() * 0.8 + "s";
-        const scale = 0.6 + Math.random() * 0.9;
-        f.style.transform = `scale(${scale})`;
-        f.style.bottom = Math.random() * 30 - 5 + "px";
-        flames.appendChild(f);
-      }
+<!-- UI HUD (씬 바깥 — 비네팅/스캔라인 위에 떠있음, 안 흔들림) -->
+<!-- 죄목 (데스크탑 우측, 모바일 숨김) -->
+<div class="culprits">
+  <div class="label">사건 경위 / EVIDENCE</div>
+  AI 에이전트로 PR 양산<br>
+  <span class="name">Jules</span> · <span class="name">Codex</span> · <span class="name">Claude</span><br>
+  레포지토리 오염<br>
+  <span class="strike">변명의 여지 없음</span>
+</div>
 
-      // ===== Embers (rising particles) =====
-      function spawnEmber() {
-        const e = document.createElement("div");
-        e.className = "ember";
-        const startX = Math.random() * window.innerWidth;
-        const startY = window.innerHeight * (0.78 + Math.random() * 0.1);
-        e.style.left = startX + "px";
-        e.style.top = startY + "px";
-        e.style.opacity = (0.6 + Math.random() * 0.4).toString();
-        flames.appendChild(e);
+<!-- 영수증 (데스크탑 좌측, 모바일 상단 스트립) -->
+<div class="receipt">
+  <div class="label">// SAJOE.RECEIPT</div>
+  <div class="row mobile-hide"><span>피해자</span><span class="v">선생님</span></div>
+  <div class="row mobile-hide"><span>가해자</span><span class="v">나</span></div>
+  <div class="row mobile-hide"><span>온도</span><span class="v">1200°C</span></div>
+  <div class="row mobile-hide"><span>상태</span><span class="v">정좌중</span></div>
+  <div class="row divider"><span>절한 횟수</span><span class="v"><span id="count">1</span> 회</span></div>
+  <div class="row"><span>체류시간</span><span class="v" id="timer">0:00</span></div>
+</div>
 
-        const drift = (Math.random() - 0.5) * 200;
-        const rise = 250 + Math.random() * 350;
-        const dur = 2500 + Math.random() * 2000;
+<!-- 하단 패널 (씬 바깥 — 절해도 안 움직임) -->
+<div class="panel">
+  <button class="bow-btn" id="bowBtn">한 번 더 사죄</button>
+</div>
 
-        e.animate(
-          [
-            { transform: "translate(0, 0) scale(1)", opacity: 1 },
-            {
-              transform: `translate(${drift}px, -${rise}px) scale(0.2)`,
-              opacity: 0,
-            },
-          ],
-          { duration: dur, easing: "ease-out" },
-        ).onfinish = () => e.remove();
-      }
-      setInterval(spawnEmber, 120);
+<script>
+  // ===== 불꽃 생성 =====
+  const flames = document.getElementById('flames');
+  const flameCount = 28;
+  for (let i = 0; i < flameCount; i++) {
+    const f = document.createElement('div');
+    f.className = 'flame';
+    const left = (i / (flameCount - 1)) * 100;
+    f.style.left = `calc(${left}% - 40px)`;
+    f.style.animationDelay = (Math.random() * 1.2) + 's';
+    f.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+    const scale = 0.6 + Math.random() * 0.9;
+    f.style.transform = `scale(${scale})`;
+    f.style.bottom = (Math.random() * 30 - 5) + 'px';
+    flames.appendChild(f);
+  }
 
-      // ===== Bow counter + timer =====
-      const countEl = document.getElementById("count");
-      const timerEl = document.getElementById("timer");
-      const dogeza = document.getElementById("dogeza");
-      const impactLines = document.querySelector(".impact-lines");
-      const btn = document.getElementById("bowBtn");
-      let count = 1;
-      const start = Date.now();
+  // ===== 불씨 =====
+  function spawnEmber() {
+    const e = document.createElement('div');
+    e.className = 'ember';
+    const startX = Math.random() * window.innerWidth;
+    const startY = window.innerHeight * (0.78 + Math.random() * 0.1);
+    e.style.left = startX + 'px';
+    e.style.top = startY + 'px';
+    e.style.opacity = (0.6 + Math.random() * 0.4).toString();
+    flames.appendChild(e);
 
-      setInterval(() => {
-        const elapsed = Math.floor((Date.now() - start) / 1000);
-        const m = Math.floor(elapsed / 60);
-        const s = elapsed % 60;
-        timerEl.textContent = `${m}:${s.toString().padStart(2, "0")}`;
-      }, 1000);
+    const drift = (Math.random() - 0.5) * 200;
+    const rise = 250 + Math.random() * 350;
+    const dur = 2500 + Math.random() * 2000;
 
-      const apologies = [
-        "정말로 죄송합니다",
-        "두 번 다시 안 하겠습니다",
-        "AI 봉인 완료",
-        "레포 청소하겠습니다",
-        "PR 닫겠습니다 전부",
-        "용서해주십시오",
-        "제 잘못입니다",
-        "사실 재밌었어",
-        "申し訳ございません",
-      ];
+    e.animate(
+      [
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${drift}px, -${rise}px) scale(0.2)`, opacity: 0 }
+      ],
+      { duration: dur, easing: 'ease-out' }
+    ).onfinish = () => e.remove();
+  }
+  setInterval(spawnEmber, 120);
 
-      btn.addEventListener("click", () => {
-        count++;
-        countEl.textContent = count;
+  // ===== 카운터 + 타이머 =====
+  const countEl = document.getElementById('count');
+  const timerEl = document.getElementById('timer');
+  const dogeza  = document.getElementById('dogeza');
+  const scene   = document.getElementById('scene');
+  const impactLines = document.querySelector('.impact-lines');
+  const btn = document.getElementById('bowBtn');
+  let count = 1;
+  const start = Date.now();
 
-        // 이모지 절 애니메이션 재시작
-        dogeza.classList.remove("bow");
-        void dogeza.offsetWidth;
-        dogeza.classList.add("bow");
+  setInterval(() => {
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+  }, 1000);
 
-        // 화면 흔들림
-        document.body.classList.remove("shake");
-        void document.body.offsetWidth;
-        document.body.classList.add("shake");
+  const apologies = [
+    '정말로 죄송합니다',
+    '두 번 다시 안 하겠습니다',
+    'AI 봉인 완료',
+    '레포 청소하겠습니다',
+    'PR 닫겠습니다 전부',
+    '용서해주십시오',
+    '제 잘못입니다',
+    '사실 재밌었어',
+    '申し訳ございません'
+  ];
 
-        // 임팩트 라인 번쩍
-        impactLines.classList.add("flash");
-        setTimeout(() => impactLines.classList.remove("flash"), 200);
+  btn.addEventListener('click', () => {
+    count++;
+    countEl.textContent = count;
 
-        // 사죄 메시지 floating
-        const msg = document.createElement("div");
-        msg.textContent =
-          apologies[Math.floor(Math.random() * apologies.length)];
-        msg.style.cssText = `
+    // 이모지 절 모션
+    dogeza.classList.remove('bow');
+    void dogeza.offsetWidth;
+    dogeza.classList.add('bow');
+
+    // 씬만 흔들림 (버튼은 .scene 바깥이라 그대로)
+    scene.classList.remove('shake');
+    void scene.offsetWidth;
+    scene.classList.add('shake');
+
+    // 임팩트 라인
+    impactLines.classList.add('flash');
+    setTimeout(() => impactLines.classList.remove('flash'), 200);
+
+    // 사죄 메시지
+    const msg = document.createElement('div');
+    msg.textContent = apologies[Math.floor(Math.random() * apologies.length)];
+    msg.style.cssText = `
       position: fixed;
       left: ${30 + Math.random() * 40}%;
       top: ${30 + Math.random() * 30}%;
@@ -785,46 +638,40 @@
       pointer-events: none;
       letter-spacing: 0.05em;
     `;
-        document.body.appendChild(msg);
-        msg.animate(
-          [
-            { transform: "translateY(0) scale(0.8)", opacity: 0 },
-            {
-              transform: "translateY(-40px) scale(1.1)",
-              opacity: 1,
-              offset: 0.3,
-            },
-            { transform: "translateY(-120px) scale(1)", opacity: 0 },
-          ],
-          { duration: 1800, easing: "ease-out" },
-        ).onfinish = () => msg.remove();
+    document.body.appendChild(msg);
+    msg.animate(
+      [
+        { transform: 'translateY(0) scale(0.8)', opacity: 0 },
+        { transform: 'translateY(-40px) scale(1.1)', opacity: 1, offset: 0.3 },
+        { transform: 'translateY(-120px) scale(1)', opacity: 0 }
+      ],
+      { duration: 1800, easing: 'ease-out' }
+    ).onfinish = () => msg.remove();
 
-        // Extra embers burst
-        for (let i = 0; i < 20; i++) setTimeout(spawnEmber, i * 20);
-      });
+    // 불씨 폭발
+    for (let i = 0; i < 20; i++) setTimeout(spawnEmber, i * 20);
+  });
 
-      // Click anywhere = embers
-      document.addEventListener("click", (e) => {
-        if (e.target.tagName === "BUTTON") return;
-        for (let i = 0; i < 6; i++) {
-          const em = document.createElement("div");
-          em.className = "ember";
-          em.style.left = e.clientX + "px";
-          em.style.top = e.clientY + "px";
-          document.body.appendChild(em);
-          const drift = (Math.random() - 0.5) * 100;
-          em.animate(
-            [
-              { transform: "translate(0,0) scale(1.5)", opacity: 1 },
-              {
-                transform: `translate(${drift}px, -${80 + Math.random() * 80}px) scale(0.2)`,
-                opacity: 0,
-              },
-            ],
-            { duration: 1000 + Math.random() * 500, easing: "ease-out" },
-          ).onfinish = () => em.remove();
-        }
-      });
-    </script>
-  </body>
+  // 클릭하면 불씨 튀김
+  document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') return;
+    for (let i = 0; i < 6; i++) {
+      const em = document.createElement('div');
+      em.className = 'ember';
+      em.style.left = e.clientX + 'px';
+      em.style.top = e.clientY + 'px';
+      document.body.appendChild(em);
+      const drift = (Math.random() - 0.5) * 100;
+      em.animate(
+        [
+          { transform: 'translate(0,0) scale(1.5)', opacity: 1 },
+          { transform: `translate(${drift}px, -${80 + Math.random()*80}px) scale(0.2)`, opacity: 0 }
+        ],
+        { duration: 1000 + Math.random() * 500, easing: 'ease-out' }
+      ).onfinish = () => em.remove();
+    }
+  });
+</script>
+
+</body>
 </html>
