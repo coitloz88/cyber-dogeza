@@ -526,7 +526,7 @@
     0%   { transform: translateY(0) scale(1); }
     100% { transform: translateY(-40px) scale(0.9); }
   }
-  body.liberated .sweat { opacity: 0; transition: opacity 1s; }
+  body.liberated .sweat { display: none; }
   body.liberated .impact-lines { display: none; }
   body.liberated .scene.shake { animation: none; }
   body.liberated .dogeza.bow  { animation: none; }
@@ -827,7 +827,11 @@
 
   // 온도 하락 로직 (0.25초마다)
   setInterval(() => {
-    if (liberated) return;
+    if (liberated) {
+      // 해탈 후에는 updateTemperatureUI() 호출을 방지하고 온도를 36.5로 고정 유지
+      currentTemp = 36.5;
+      return;
+    }
 
     // 온도 하락: round((현재 온도 - 1200) / 45)
     let drop = Math.round((currentTemp - 1200) / 45);
@@ -945,6 +949,13 @@
 
     // 인물을 🙏 (합장)으로 변신
     dogeza.textContent = '🙏';
+
+    // 온도 36.5도로 고정 & 초록색 변경
+    currentTemp = 36.5;
+    const tempEl = document.getElementById('temperature');
+    tempEl.textContent = '36.5°C';
+    tempEl.style.color = '#4ade80';
+    tempEl.style.textShadow = '0 0 10px #4ade80';
 
     // 빰빠바밤
     playChime();
