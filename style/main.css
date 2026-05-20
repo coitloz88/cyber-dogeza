@@ -1,0 +1,835 @@
+:root {
+  --ink: #0a0508;
+  --ember: #ff6a1a;
+  --flame: #ffb347;
+  --hot: #fff2c4;
+  --blood: #c8102e;
+  --bone: #f6e9d2;
+  --neon: #00fff0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: "Noto Serif KR", serif;
+  cursor: crosshair;
+}
+
+/* ===== Scanline + CRT vignette (overlay, never shakes) ===== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.18) 3px,
+    rgba(0, 0, 0, 0) 4px
+  );
+  pointer-events: none;
+  z-index: 50;
+  mix-blend-mode: multiply;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  pointer-events: none;
+  z-index: 49;
+}
+
+/* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
+.scene {
+  position: fixed;
+  inset: 0;
+}
+.scene.shake {
+  animation: screenShake 0.35s ease-out;
+}
+@keyframes screenShake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  15% {
+    transform: translate(-5px, 2px) rotate(-0.3deg);
+  }
+  30% {
+    transform: translate(5px, -2px) rotate(0.3deg);
+  }
+  45% {
+    transform: translate(-3px, 1px);
+  }
+  60% {
+    transform: translate(3px, -1px);
+  }
+  75% {
+    transform: translate(-2px, 0);
+  }
+}
+
+/* ===== Background grid (cyber) ===== */
+.grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 90, 30, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 90, 30, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: perspective(600px) rotateX(60deg) translateY(20%);
+  transform-origin: center bottom;
+  z-index: 1;
+  animation: gridShift 8s linear infinite;
+}
+@keyframes gridShift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 40px;
+  }
+}
+
+/* ===== Hellfire glow at bottom ===== */
+.glow {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -10vh;
+  height: 60vh;
+  background: radial-gradient(
+    ellipse at center top,
+    transparent 0%,
+    transparent 35%,
+    var(--ember) 60%,
+    var(--blood) 90%
+  );
+  filter: blur(60px);
+  opacity: 0.7;
+  z-index: 2;
+  animation: pulse 3s ease-in-out infinite alternate;
+}
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+    transform: scaleY(0.95);
+  }
+  to {
+    opacity: 0.9;
+    transform: scaleY(1.05);
+  }
+}
+
+/* ===== Flames ===== */
+.flames {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 35vh;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+  transform-origin: bottom center;
+  transform: scaleY(calc(1 + var(--fire-intensity, 0) * 0.8));
+  filter: brightness(calc(1 + var(--fire-intensity, 0) * 1.5));
+}
+.flame {
+  position: absolute;
+  bottom: -20px;
+  width: 80px;
+  height: 160px;
+  background: radial-gradient(
+    circle at 50% 80%,
+    var(--hot) 0%,
+    var(--flame) 30%,
+    var(--ember) 60%,
+    transparent 75%
+  );
+  filter: blur(8px);
+  border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+  mix-blend-mode: screen;
+  animation: flicker 1.2s ease-in-out infinite alternate;
+}
+@keyframes flicker {
+  0% {
+    transform: translateY(0) scale(1, 1) skewX(-2deg);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-12px) scale(1.1, 1.15) skewX(3deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-4px) scale(0.95, 0.9) skewX(-4deg);
+    opacity: 0.7;
+  }
+}
+
+/* ===== 불판 ===== */
+.grill {
+  position: fixed;
+  left: 50%;
+  bottom: 6vh;
+  transform: translateX(-50%);
+  width: min(720px, 90vw);
+  height: 26px;
+  --grill-c1: #2a1208;
+  --grill-c2: #5a2410;
+  --grill-c3: #1a0804;
+  --grill-glow1: rgba(255, 180, 100, 0.3);
+  --grill-glow2: rgba(255, 90, 0, 0.6);
+  background: linear-gradient(
+    to bottom,
+    var(--grill-c1) 0%,
+    var(--grill-c2) 40%,
+    var(--grill-c3) 100%
+  );
+  border-radius: 6px;
+  box-shadow:
+    inset 0 2px 0 var(--grill-glow1),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.8),
+    0 -4px 30px var(--grill-glow2),
+    0 8px 24px rgba(0, 0, 0, 0.9);
+  z-index: 6;
+}
+.grill::before {
+  content: "";
+  position: absolute;
+  inset: 4px 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 18px,
+    rgba(255, 200, 100, 0.4) 18px,
+    rgba(255, 200, 100, 0.4) 20px
+  );
+  border-radius: 3px;
+}
+
+.ember {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--hot);
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px var(--ember),
+    0 0 12px var(--flame);
+  pointer-events: none;
+}
+
+/* ===== Stage ===== */
+.stage {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4vh 2rem 0;
+  pointer-events: none;
+}
+
+.badge {
+  font-family: "DotGothic16", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  color: var(--neon);
+  padding: 6px 14px;
+  border: 1px solid var(--neon);
+  text-shadow: 0 0 8px var(--neon);
+  box-shadow:
+    0 0 12px rgba(0, 255, 240, 0.3),
+    inset 0 0 12px rgba(0, 255, 240, 0.1);
+  margin-bottom: 1.2rem;
+  animation: glitchBox 4s steps(1) infinite;
+}
+@keyframes glitchBox {
+  0%,
+  90%,
+  100% {
+    transform: translate(0);
+  }
+  92% {
+    transform: translate(-2px, 1px);
+  }
+  94% {
+    transform: translate(2px, -1px);
+  }
+  96% {
+    transform: translate(-1px, -1px);
+  }
+}
+
+h1 {
+  font-family: "Shippori Mincho", "Noto Serif KR", serif;
+  font-weight: 800;
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.95;
+  text-align: center;
+  color: var(--bone);
+  text-shadow:
+    0 0 1px var(--blood),
+    0 0 20px rgba(255, 100, 30, 0.6),
+    0 0 60px rgba(255, 60, 0, 0.4);
+  letter-spacing: 0.02em;
+  position: relative;
+}
+h1 .stamp {
+  display: inline-block;
+  color: var(--blood);
+  text-shadow:
+    0 0 12px var(--blood),
+    0 0 30px rgba(200, 0, 30, 0.5);
+  transform: rotate(-4deg);
+  margin: 0 0.1em;
+}
+h1::before {
+  content: "謝罪";
+  position: absolute;
+  top: -1.5rem;
+  right: -1rem;
+  font-size: 1rem;
+  color: var(--blood);
+  border: 2px solid var(--blood);
+  padding: 4px 8px;
+  transform: rotate(8deg);
+  text-shadow: none;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 800;
+  opacity: 0.9;
+}
+
+.subtitle {
+  margin-top: 1rem;
+  font-family: "DotGothic16", monospace;
+  font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+  letter-spacing: 0.15em;
+  color: var(--flame);
+  text-align: center;
+  opacity: 0.9;
+}
+.subtitle .blink {
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ===== Dogeza figure ===== */
+.figure-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 10vh;
+  transform: translateX(-50%);
+  z-index: 7;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dogeza {
+  font-size: clamp(7rem, 16vw, 12rem);
+  line-height: 1;
+  display: inline-block;
+  transform-origin: bottom center;
+  animation: tremor 0.18s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 12px var(--dogeza-glow1, rgba(255, 130, 30, 0.9)))
+    drop-shadow(0 0 32px var(--dogeza-glow2, rgba(255, 60, 0, 0.7)))
+    drop-shadow(0 -10px 24px var(--dogeza-glow3, rgba(255, 180, 30, 0.5)));
+}
+
+@keyframes tremor {
+  0% {
+    transform: translate(-0.4px, 0) rotate(-0.4deg);
+  }
+  100% {
+    transform: translate(0.4px, 0.5px) rotate(0.4deg);
+  }
+}
+
+.dogeza.bow {
+  animation: bowHarder 0.45s cubic-bezier(0.3, 1.4, 0.4, 1);
+}
+@keyframes bowHarder {
+  0% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+  25% {
+    transform: translateY(-4px) scaleY(1.04) scaleX(0.98);
+  }
+  55% {
+    transform: translateY(6px) scaleY(0.88) scaleX(1.08);
+  }
+  80% {
+    transform: translateY(2px) scaleY(0.96) scaleX(1.02);
+  }
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+}
+
+.sweat {
+  position: absolute;
+  top: 18%;
+  right: 22%;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  animation: sweatDrop 1.8s ease-in infinite;
+  filter: drop-shadow(0 0 6px rgba(127, 223, 255, 0.8));
+}
+@keyframes sweatDrop {
+  0% {
+    transform: translateY(-10px) scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-5px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(40px) scale(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(60px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+.impact-lines {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  height: 140%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.impact-lines.flash {
+  opacity: 1;
+}
+.impact-lines span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, var(--hot), transparent);
+  transform-origin: left center;
+}
+.impact-lines span:nth-child(1) {
+  transform: translate(-50%, -50%) rotate(20deg) translateX(80px);
+}
+.impact-lines span:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(-20deg) translateX(80px);
+}
+.impact-lines span:nth-child(3) {
+  transform: translate(-50%, -50%) rotate(160deg) translateX(80px);
+}
+.impact-lines span:nth-child(4) {
+  transform: translate(-50%, -50%) rotate(-160deg) translateX(80px);
+}
+
+/* ===== Bottom panel (OUTSIDE .scene — doesn't shake) ===== */
+.panel {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+button.bow-btn {
+  font-family: "Shippori Mincho", "Noto Serif KR", serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--bone);
+  background: linear-gradient(180deg, #1a0a08, #3a0e08);
+  border: 2px solid var(--blood);
+  padding: 8px 22px;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(255, 180, 100, 0.2),
+    0 0 20px rgba(200, 16, 46, 0.6),
+    inset 0 0 20px rgba(255, 80, 30, 0.2);
+  text-shadow: 0 0 6px var(--ember);
+  transition:
+    transform 0.1s,
+    box-shadow 0.3s;
+}
+button.bow-btn:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 180, 100, 0.4),
+    0 0 30px rgba(255, 60, 0, 0.9),
+    inset 0 0 30px rgba(255, 120, 30, 0.4);
+}
+button.bow-btn:active {
+  transform: scale(0.96);
+}
+
+/* ===== Side panels ===== */
+.culprits {
+  position: fixed;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+  z-index: 55;
+  font-family: "DotGothic16", monospace;
+  font-size: 0.7rem;
+  color: rgba(246, 233, 210, 0.75);
+  letter-spacing: 0.1em;
+  text-align: right;
+  line-height: 1.8;
+  max-width: 200px;
+  padding: 10px 14px;
+  background: rgba(10, 5, 8, 0.45);
+  border: 1px solid rgba(200, 16, 46, 0.3);
+  backdrop-filter: blur(6px);
+}
+.culprits .label {
+  color: var(--blood);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 0.5rem;
+}
+.culprits .name {
+  color: var(--flame);
+}
+.culprits .strike {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.receipt {
+  position: fixed;
+  top: 50%;
+  left: 1.5rem;
+  transform: translateY(-50%);
+  z-index: 55;
+  font-family: "DotGothic16", monospace;
+  font-size: 0.7rem;
+  color: rgba(246, 233, 210, 0.85);
+  letter-spacing: 0.1em;
+  line-height: 1.8;
+  max-width: 220px;
+  padding: 10px 14px;
+  background: rgba(10, 5, 8, 0.45);
+  border: 1px solid rgba(255, 180, 100, 0.3);
+  backdrop-filter: blur(6px);
+}
+.receipt .label {
+  color: var(--neon);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 6px var(--neon);
+}
+.receipt .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.receipt .row .v {
+  color: var(--flame);
+}
+.receipt .row.divider {
+  border-top: 1px dashed rgba(255, 180, 100, 0.3);
+  padding-top: 0.5rem;
+  margin-top: 0.3rem;
+}
+#count,
+#timer {
+  text-shadow: 0 0 6px var(--ember);
+}
+
+/* ===== 108배 해탈 (LIBERATION) ===== */
+.liberation-flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+}
+.liberation-flash.go {
+  animation: flashFade 1.8s ease-out forwards;
+}
+@keyframes flashFade {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.liberation-msg {
+  position: fixed;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 80;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  font-family: "Shippori Mincho", "Noto Serif KR", serif;
+  max-width: 90vw;
+}
+.liberation-msg .big {
+  font-size: clamp(3.5rem, 12vw, 8rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow:
+    0 0 30px rgba(255, 220, 150, 1),
+    0 0 80px rgba(255, 200, 100, 0.9),
+    0 0 120px rgba(255, 180, 80, 0.6);
+  letter-spacing: 0.15em;
+  line-height: 1;
+}
+.liberation-msg .sub {
+  font-size: clamp(0.85rem, 2vw, 1.3rem);
+  color: rgba(255, 240, 200, 0.95);
+  margin-top: 1.4rem;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+}
+.liberation-msg .english {
+  font-family: "DotGothic16", monospace;
+  font-size: clamp(0.6rem, 1.3vw, 0.8rem);
+  color: rgba(255, 240, 200, 0.7);
+  letter-spacing: 0.4em;
+  margin-top: 0.6rem;
+}
+
+body.liberated .liberation-msg {
+  animation: liberationAppear 2.5s ease-out forwards;
+  animation-delay: 0.8s;
+}
+@keyframes liberationAppear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    filter: blur(20px);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* 떨어지는 꽃잎 */
+.petal {
+  position: fixed;
+  z-index: 70;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 0 8px rgba(255, 240, 200, 0.7));
+}
+
+/* 해탈 상태에서 씬 변화 */
+body.liberated::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(255, 220, 150, 0.25) 100%
+  );
+  transition: background 3s ease;
+}
+body.liberated .glow {
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(255, 240, 200, 0.8) 0%,
+    rgba(255, 220, 150, 0.4) 40%,
+    transparent 100%
+  );
+  transition: background 3s ease;
+  opacity: 0.5;
+}
+body.liberated .flames {
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+body.liberated .grid {
+  opacity: 0.4;
+  transition: opacity 3s ease;
+}
+body.liberated .grill {
+  opacity: 0.2;
+  transition: opacity 2s ease;
+}
+
+body.liberated .dogeza {
+  animation: ascend 4s ease-out forwards;
+  filter: drop-shadow(0 0 20px rgba(255, 240, 200, 0.9))
+    drop-shadow(0 0 60px rgba(255, 220, 150, 0.6));
+  transition: filter 2s ease;
+}
+@keyframes ascend {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-40px) scale(0.9);
+  }
+}
+body.liberated .sweat {
+  display: none;
+}
+body.liberated .impact-lines {
+  display: none;
+}
+body.liberated .scene.shake {
+  animation: none;
+}
+body.liberated .dogeza.bow {
+  animation: none;
+}
+
+body.liberated .badge,
+body.liberated h1,
+body.liberated .subtitle,
+body.liberated .culprits {
+  opacity: 0.15;
+  transition: opacity 2.5s ease;
+}
+
+body.liberated .receipt {
+  border-color: rgba(255, 220, 150, 0.5);
+  background: rgba(40, 30, 15, 0.55);
+  color: rgba(255, 240, 200, 0.9);
+  transition: all 2.5s ease;
+}
+body.liberated .receipt .v,
+body.liberated #count,
+body.liberated #timer {
+  color: #ffd966;
+  text-shadow: 0 0 6px rgba(255, 220, 150, 0.7);
+}
+
+body.liberated button.bow-btn {
+  border-color: rgba(255, 220, 150, 0.6);
+  background: linear-gradient(180deg, #2a1f08, #4a3a18);
+  box-shadow:
+    0 0 0 1px rgba(255, 220, 150, 0.3),
+    0 0 20px rgba(255, 200, 100, 0.6),
+    inset 0 0 20px rgba(255, 240, 150, 0.2);
+  text-shadow: 0 0 6px rgba(255, 220, 150, 0.8);
+  transition: all 2s ease;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 720px) {
+  /* 데코 패널 숨김 */
+  .culprits {
+    display: none;
+  }
+  .mobile-hide {
+    display: none;
+  }
+
+  /* Receipt: 화면 상단 가로 스트립으로 변신 (count + timer만) */
+  .receipt {
+    position: fixed;
+    top: max(0.6rem, env(safe-area-inset-top));
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: auto;
+    transform: none;
+    max-width: none;
+    font-size: 0.6rem;
+    background: rgba(10, 5, 8, 0.65);
+    padding: 5px 12px;
+    border: 1px solid rgba(255, 180, 100, 0.3);
+    backdrop-filter: blur(8px);
+    line-height: 1.3;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+    z-index: 55;
+  }
+  .receipt .label {
+    display: none;
+  }
+  .receipt .row {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0.4rem;
+  }
+  .receipt .row span:first-child {
+    font-size: 0.55rem;
+    opacity: 0.7;
+  }
+
+  /* 타이틀 영역 축소 (상단 receipt 스트립 안 가리게) */
+  .stage {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
+  }
+  h1 {
+    font-size: clamp(2.2rem, 11vw, 4rem);
+  }
+  h1::before {
+    display: none;
+  }
+  .badge {
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    letter-spacing: 0.3em;
+  }
+  .subtitle {
+    font-size: 0.75rem;
+  }
+
+  /* 인물 위치/크기 */
+  .figure-wrap {
+    bottom: 13vh;
+  }
+  .grill {
+    bottom: 10vh;
+    width: 85vw;
+  }
+  .dogeza {
+    font-size: clamp(5.5rem, 26vw, 9rem);
+  }
+
+  /* 버튼 슬림하게 */
+  button.bow-btn {
+    font-size: 0.85rem;
+    padding: 7px 18px;
+  }
+}
