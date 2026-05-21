@@ -833,3 +833,206 @@ body.liberated button.bow-btn {
     padding: 7px 18px;
   }
 }
+
+/* ===== Diving Mask (🤿) ===== */
+.diving-mask {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.6em; /* relative to dogeza emoji */
+  display: none; /* Only visible in Phase 2 */
+  pointer-events: none;
+  z-index: 10;
+}
+.diving-mask.fly-away {
+  display: block;
+  animation: flyAway 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes flyAway {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(200%, -500%) rotate(360deg) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ===== Score Board ===== */
+.score-board {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: "DotGothic16", monospace;
+  pointer-events: none;
+}
+.score-label {
+  color: var(--neon);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 0 8px var(--neon);
+}
+.score-value {
+  display: flex;
+  gap: 2px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    0 0 10px #00fff0,
+    0 0 20px #00fff0;
+}
+.score-value span {
+  display: inline-block;
+  transition: color 0.1s;
+}
+.score-value span.flash-shake {
+  animation: flashShake 0.3s ease-out;
+  color: #fff2c4;
+  text-shadow:
+    0 0 15px #ffd966,
+    0 0 25px #ffb347;
+}
+@keyframes flashShake {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  25% {
+    transform: scale(1.2) translateY(-4px);
+  }
+  50% {
+    transform: scale(1.1) translateY(2px);
+  }
+  75% {
+    transform: scale(1.15) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ===== Phase 2 Background/Colors ===== */
+body.phase2 {
+  --ink: #000a14;
+  background: var(--ink);
+}
+body.phase2 .grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 240, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 240, 0.1) 1px, transparent 1px);
+}
+body.phase2 .glow {
+  background: radial-gradient(
+    ellipse at center top,
+    transparent 0%,
+    transparent 35%,
+    #004466 60%,
+    #001133 90%
+  );
+  animation: pulseWater 4s ease-in-out infinite alternate;
+}
+@keyframes pulseWater {
+  from {
+    opacity: 0.4;
+    transform: scaleY(0.95);
+  }
+  to {
+    opacity: 0.7;
+    transform: scaleY(1.05);
+  }
+}
+
+/* ===== Fish ===== */
+.fish {
+  position: absolute;
+  font-size: 2rem;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 240, 0.5));
+}
+@keyframes swimLeft {
+  from {
+    transform: translateX(100vw) translateY(0);
+  }
+  to {
+    transform: translateX(-20vw) translateY(20px);
+  }
+}
+@keyframes swimRight {
+  from {
+    transform: translateX(-20vw) translateY(0) scaleX(-1);
+  }
+  to {
+    transform: translateX(100vw) translateY(-20px) scaleX(-1);
+  }
+}
+
+/* ===== Bubbles ===== */
+.bubble {
+  position: absolute;
+  font-size: 1.5rem;
+  z-index: 8;
+  pointer-events: none;
+  animation: floatUp ease-in forwards;
+}
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* ===== Mobile Score Board adjustments ===== */
+@media (max-width: 720px) {
+  .score-board {
+    top: calc(env(safe-area-inset-top, 0px) + 2.5rem);
+    right: 50%;
+    transform: translateX(50%);
+    align-items: center;
+  }
+  .score-value {
+    font-size: 2rem;
+  }
+}
+
+/* ===== Additional style tweaks ===== */
+.scene.shake.water {
+  animation: screenShakeWater 0.4s ease-in-out;
+}
+@keyframes screenShakeWater {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-3px, 4px) rotate(-0.5deg);
+  }
+  50% {
+    transform: translate(4px, -3px) rotate(0.4deg);
+  }
+  75% {
+    transform: translate(-2px, 2px);
+  }
+}
+
+.depth-overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s linear;
+}

@@ -1,14 +1,29 @@
-import {
-  lerpColor,
-  apologies,
-  celebrations,
-  playChime,
-  spawnPetal,
-} from "./interface.js";
+import { lerpColor, getRandomLocation } from "./interface.js";
+import { PhaseController } from "./core.js";
+import { initPhase2 } from "./phase2.js";
+
+let emberInterval;
 
 export function initPhase1() {
+  document.body.className = ""; // Reset body classes
+
+  // UI Setup for Phase 1
+  document.getElementById("mainTitle").innerHTML =
+    '사이버<span class="stamp" id="titleStamp">불판</span>도게자';
+  document.getElementById("location").textContent = getRandomLocation(1);
+  document.getElementById("sweatEffect").textContent = "💦";
+  document.getElementById("divingMask").classList.remove("fly-away");
+  document.getElementById("divingMask").style.display = "none";
+  document.querySelector(
+    ".receipt .row:nth-child(4) span:first-child",
+  ).textContent = "온도";
+
+  const tempEl = document.getElementById("temperature");
+  tempEl.textContent = "1200°C";
+
   // ===== 불꽃 생성 =====
   const flames = document.getElementById("flames");
+  flames.innerHTML = ""; // clean up if returning
   const flameCount = 28;
   for (let i = 0; i < flameCount; i++) {
     const f = document.createElement("div");
@@ -49,23 +64,13 @@ export function initPhase1() {
       { duration: dur, easing: "ease-out" },
     ).onfinish = () => e.remove();
   }
-  setInterval(spawnEmber, 120);
+  emberInterval = setInterval(spawnEmber, 120);
 
-  // ===== 카운터 + 타이머 =====
-  const countEl = document.getElementById("count");
-  const timerEl = document.getElementById("timer");
-  const dogeza = document.getElementById("dogeza");
-  const scene = document.getElementById("scene");
-  const impactLines = document.querySelector(".impact-lines");
-  const btn = document.getElementById("bowBtn");
-  const tempEl = document.getElementById("temperature");
+  // ===== 상태 =====
   const grillEl = document.querySelector(".grill");
-
-  let count = 1;
-  const start = Date.now();
+  const dogeza = document.getElementById("dogeza");
 
   let currentTemp = 1200;
-  let lastClickTime = 0;
 
   // 온도 UI 업데이트 함수
   function updateTemperatureUI() {
@@ -186,150 +191,63 @@ export function initPhase1() {
     dogeza.style.setProperty("--dogeza-glow3", dGlow3);
   }
 
-  // 온도 하락 로직 (0.25초마다)
-  setInterval(() => {
-    if (liberated) {
-      currentTemp = 36.5;
-      return;
-    }
-
-    let drop = Math.round((currentTemp - 1200) / 45);
-    currentTemp -= drop;
-    if (currentTemp < 1200) currentTemp = 1200;
-
-    updateTemperatureUI();
-  }, 250);
-
-  setInterval(() => {
-    const elapsed = Math.floor((Date.now() - start) / 1000);
-    const m = Math.floor(elapsed / 60);
-    const s = elapsed % 60;
-    timerEl.textContent = `${m}:${s.toString().padStart(2, "0")}`;
-  }, 1000);
-
-  // ===== 해탈 (108배 완료) =====
-  let liberated = false;
-  function triggerLiberation() {
-    if (liberated) return;
-    liberated = true;
-
-    // 흰 섬광
-    const flash = document.createElement("div");
-    flash.className = "liberation-flash";
-    document.body.appendChild(flash);
-    requestAnimationFrame(() => flash.classList.add("go"));
-    setTimeout(() => flash.remove(), 1900);
-
-    // 해탈 상태 적용
-    document.body.classList.add("liberated");
-
-    // 인물을 🙏 (합장)으로 변신
-    dogeza.textContent = "🙏";
-
-    // 온도 36.5도로 고정
-    currentTemp = 36.5;
-    const tempEl = document.getElementById("temperature");
-    tempEl.textContent = "36.5°C";
-    tempEl.style.color = "#4ade80";
-    tempEl.style.textShadow = "0 0 10px #4ade80";
-
-    // 빰빠바밤
-    playChime();
-
-    // 꽃잎 폭풍
-    const petalInterval = setInterval(spawnPetal, 180);
-    setTimeout(() => clearInterval(petalInterval), 10000);
-    for (let i = 0; i < 30; i++) {
-      setTimeout(spawnPetal, i * 40);
-    }
-
-    // 버튼 텍스트도 바꿈
-    btn.textContent = "계속 감사하기";
-  }
-
-  btn.addEventListener("click", () => {
-    count++;
-    countEl.textContent = count;
-
-    if (!liberated) {
-      // 온도 상승 로직
-      const now = Date.now();
-      let timeDiff = now - lastClickTime;
-      if (timeDiff === 0) timeDiff = 1;
-
+  const controller = new PhaseController({
+    phaseName: "Phase1",
+    maxCount: 108,
+    onTick: () => {
+      let drop = Math.round((currentTemp - 1200) / 45);
+      currentTemp -= drop;
+      if (currentTemp < 1200) currentTemp = 1200;
+      updateTemperatureUI();
+    },
+    onBow: (timeDiff) => {
       let bonus = 0;
       if (timeDiff < 1000) {
         bonus = Math.max(0, 100 - timeDiff / 10);
       }
-
       currentTemp += 50 + bonus;
       if (currentTemp > 3500) currentTemp = 3500;
-
-      lastClickTime = now;
       updateTemperatureUI();
 
-      // 이모지 절 모션
-      dogeza.classList.remove("bow");
-      void dogeza.offsetWidth;
-      dogeza.classList.add("bow");
-
-      // 씬만 흔들림
-      scene.classList.remove("shake");
-      void scene.offsetWidth;
-      scene.classList.add("shake");
-
-      // 임팩트 라인
-      impactLines.classList.add("flash");
-      setTimeout(() => impactLines.classList.remove("flash"), 200);
-    }
-
-    // 떠오르는 메시지
-    const pool = liberated ? celebrations : apologies;
-    const msg = document.createElement("div");
-    msg.textContent = pool[Math.floor(Math.random() * pool.length)];
-    msg.style.cssText = `
-      position: fixed;
-      left: ${30 + Math.random() * 40}%;
-      top: ${30 + Math.random() * 30}%;
-      font-family: 'Shippori Mincho', serif;
-      font-weight: 800;
-      font-size: ${1.5 + Math.random() * 1}rem;
-      color: #fff2c4;
-      text-shadow: ${
-        liberated
-          ? "0 0 12px #ffd966, 0 0 24px #ffb347"
-          : "0 0 12px #ff6a1a, 0 0 24px #c8102e"
-      };
-      z-index: 30;
-      pointer-events: none;
-      letter-spacing: 0.05em;
-    `;
-    document.body.appendChild(msg);
-    msg.animate(
-      [
-        { transform: "translateY(0) scale(0.8)", opacity: 0 },
-        { transform: "translateY(-40px) scale(1.1)", opacity: 1, offset: 0.3 },
-        { transform: "translateY(-120px) scale(1)", opacity: 0 },
-      ],
-      { duration: 1800, easing: "ease-out" },
-    ).onfinish = () => msg.remove();
-
-    // 파티클
-    if (liberated) {
-      for (let i = 0; i < 5; i++) setTimeout(spawnPetal, i * 80);
-    } else {
       for (let i = 0; i < 20; i++) setTimeout(spawnEmber, i * 20);
-    }
+    },
+    onLiberate: () => {
+      currentTemp = 36.5;
+      tempEl.textContent = "36.5°C";
+      tempEl.style.color = "#4ade80";
+      tempEl.style.textShadow = "0 0 10px #4ade80";
 
-    // 108배 도달
-    if (count === 108) {
-      setTimeout(triggerLiberation, 500);
-    }
+      // '물 속으로 이동' 버튼 추가
+      const btnGroup = document.getElementById("btnGroup");
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "bow-btn";
+      nextBtn.id = "nextPhaseBtn";
+      nextBtn.textContent = "물 속으로 이동";
+      nextBtn.style.background = "linear-gradient(180deg, #002244, #004466)";
+      nextBtn.style.borderColor = "#00fff0";
+
+      nextBtn.addEventListener("click", () => {
+        controller.cleanup();
+        initPhase2();
+      });
+      btnGroup.appendChild(nextBtn);
+    },
+    onCleanup: () => {
+      clearInterval(emberInterval);
+      document.removeEventListener("click", clickEffect);
+      flames.innerHTML = "";
+      document.documentElement.style.setProperty("--fire-intensity", "0");
+      grillEl.style.cssText = ""; // reset grill styling
+
+      const nextBtn = document.getElementById("nextPhaseBtn");
+      if (nextBtn) nextBtn.remove();
+    },
   });
 
-  // 클릭하면 불씨 튀김
-  document.addEventListener("click", (e) => {
+  // 클릭하면 불씨 튀김 (전역 이벤트지만 Cleanup에서 해제할 것)
+  function clickEffect(e) {
     if (e.target.tagName === "BUTTON") return;
+    if (controller.isLiberated) return;
     for (let i = 0; i < 6; i++) {
       const em = document.createElement("div");
       em.className = "ember";
@@ -348,5 +266,8 @@ export function initPhase1() {
         { duration: 1000 + Math.random() * 500, easing: "ease-out" },
       ).onfinish = () => em.remove();
     }
-  });
+  }
+  document.addEventListener("click", clickEffect);
+
+  controller.start();
 }

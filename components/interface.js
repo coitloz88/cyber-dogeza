@@ -34,6 +34,33 @@ export const celebrations = [
   "해탈",
 ];
 
+export const phase1Locations = [
+  "불판 위",
+  "Tefal 프라이팬 위",
+  "LG 광파오븐 안",
+  "용광로 앞",
+  "에어프라이어 안",
+  "바베큐 그릴 위",
+  "전자레인지 한가운데",
+  "가스레인지 화구 위",
+];
+
+export const phase2Locations = [
+  "마리아나 해구",
+  "태평양 심해",
+  "버뮤다 삼각지대",
+  "챌린저 해연",
+  "타이타닉호 근처",
+  "해왕성 바다",
+  "동해 앞바다 1000m",
+  "인어공주 앞마당",
+];
+
+export function getRandomLocation(phase) {
+  const arr = phase === 1 ? phase1Locations : phase2Locations;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 // ===== 빰빠바밤 (Web Audio API로 합성) =====
 export function playChime() {
   try {
