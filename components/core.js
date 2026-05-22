@@ -4,6 +4,7 @@ import { playChime, spawnPetal, apologies, celebrations } from "./interface.js";
 export const globalState = {
   score: 0,
   totalBows: 0,
+  globalStartTime: Date.now(),
 };
 
 // 점수 업데이트 UI 함수
@@ -67,10 +68,10 @@ export class PhaseController {
     this.startTime = Date.now();
     this.countEl.textContent = "0";
 
-    // Timer interval
+    // Timer interval (Global timer)
     this.intervals.push(
       setInterval(() => {
-        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+        const elapsed = Math.floor((Date.now() - globalState.globalStartTime) / 1000);
         const m = Math.floor(elapsed / 60);
         const s = elapsed % 60;
         if (this.timerEl) {

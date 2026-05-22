@@ -22,6 +22,7 @@ body {
   color: var(--bone);
   font-family: "Noto Serif KR", serif;
   cursor: crosshair;
+  word-break: keep-all;
 }
 
 /* ===== Scanline + CRT vignette (overlay, never shakes) ===== */
@@ -284,6 +285,7 @@ h1 {
   line-height: 0.95;
   text-align: center;
   color: var(--bone);
+  white-space: nowrap;
   text-shadow:
     0 0 1px var(--blood),
     0 0 20px rgba(255, 100, 30, 0.6),

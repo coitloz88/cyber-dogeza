@@ -39,7 +39,14 @@ export function initPhase2() {
     let ratio = (currentDepth - 1000) / 2500;
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
-    overlay.style.opacity = (ratio * 0.85).toString();
+
+    if (controller.isLiberated) {
+      overlay.style.background = "radial-gradient(ellipse at center, transparent 30%, rgba(0, 255, 200, 0.4) 100%)";
+      overlay.style.opacity = "1";
+    } else {
+      overlay.style.background = "black";
+      overlay.style.opacity = (ratio * 0.85).toString();
+    }
 
     // 텍스트 경고
     if (currentDepth >= 3000) {
@@ -150,7 +157,7 @@ export function initPhase2() {
       tempEl.textContent = "0m";
       tempEl.style.color = "#4ade80";
       tempEl.style.textShadow = "0 0 10px #4ade80";
-      overlay.style.opacity = "0";
+      updateDepthUI();
 
       // 마스크 날아가기
       divingMask.classList.add("fly-away");
