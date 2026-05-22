@@ -31,10 +31,10 @@ export function initPhase2() {
   document.getElementById("scene").appendChild(overlay);
 
   let currentDepth = 1000;
-  const shallowTop = [10, 90, 180];
-  const shallowBottom = [0, 40, 110];
-  const deepTop = [2, 12, 35];
-  const deepBottom = [0, 0, 0];
+  const shallowTopRgb = [10, 90, 180];
+  const shallowBottomRgb = [0, 40, 110];
+  const deepTopRgb = [2, 12, 35];
+  const deepBottomRgb = [0, 0, 0];
 
   function updateDepthUI() {
     tempEl.textContent = `${Math.round(currentDepth)}m`;
@@ -44,8 +44,8 @@ export function initPhase2() {
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
 
-    const topColor = lerpColor(shallowTop, deepTop, ratio);
-    const bottomColor = lerpColor(shallowBottom, deepBottom, ratio);
+    const topColor = lerpColor(shallowTopRgb, deepTopRgb, ratio);
+    const bottomColor = lerpColor(shallowBottomRgb, deepBottomRgb, ratio);
     document.body.style.background = `linear-gradient(180deg, ${topColor} 0%, ${bottomColor} 100%)`;
 
     if (controller.isLiberated) {

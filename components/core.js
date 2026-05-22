@@ -250,7 +250,7 @@ export class PhaseController {
       document.querySelectorAll(".petal").forEach((p) => {
         if (p.classList.contains("petal-fade")) return;
         p.classList.add("petal-fade");
-        const animations = p.getAnimations ? p.getAnimations() : [];
+        const animations = p.getAnimations?.() ?? [];
         animations.forEach((anim) => anim.cancel());
         p.style.transition = "opacity 1s ease, transform 1s ease";
         p.style.opacity = "0";
