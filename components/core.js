@@ -166,7 +166,8 @@ export class PhaseController {
     setTimeout(() => flash.remove(), 1900);
 
     document.body.classList.add("liberated");
-    if (this.dogeza) this.dogeza.textContent = "🙏";
+    const emojiEl = document.getElementById("dogezaEmoji");
+    if (emojiEl) emojiEl.textContent = "🙏";
 
     playChime();
 
@@ -228,7 +229,8 @@ export class PhaseController {
 
     // reset visual states
     if (this.dogeza) {
-      this.dogeza.textContent = "🙇"; // default
+      const emojiEl = document.getElementById("dogezaEmoji");
+      if (emojiEl) emojiEl.textContent = "🙇";
       this.dogeza.className = "dogeza";
     }
   }
