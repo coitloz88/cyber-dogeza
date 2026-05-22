@@ -25,8 +25,11 @@
 
       <!-- 도게자 인물 -->
       <div class="figure-wrap" id="figure">
-        <div class="dogeza" id="dogeza">🙇</div>
-        <div class="sweat">💦</div>
+        <div class="dogeza" id="dogeza">
+          🙇
+          <div class="diving-mask" id="divingMask">🤿</div>
+        </div>
+        <div class="sweat" id="sweatEffect">💦</div>
         <div class="impact-lines">
           <span></span><span></span><span></span><span></span>
         </div>
@@ -34,10 +37,14 @@
 
       <div class="stage">
         <div class="badge">⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠</div>
-        <h1>사이버<span class="stamp">불판</span>도게자</h1>
+        <h1 id="mainTitle">
+          사이버<span class="stamp" id="titleStamp">불판</span>도게자
+        </h1>
         <div class="subtitle">
           [ 진심사죄 모드 가동중<span class="blink">_</span> ]
         </div>
+        <!-- 점수판 (모바일 레이아웃 조정 시 이 위치로 들어오도록 래핑) -->
+        <div id="scoreContainer"></div>
       </div>
     </div>
     <!-- /.scene -->
@@ -68,6 +75,9 @@
       <div class="row mobile-hide">
         <span>상태</span><span class="v">정좌중</span>
       </div>
+      <div class="row">
+        <span>장소</span><span class="v" id="location">불판 위</span>
+      </div>
       <div class="row divider">
         <span>절한 횟수</span
         ><span class="v"><span id="count">1</span> 회</span>
@@ -79,7 +89,18 @@
 
     <!-- 하단 패널 (씬 바깥 — 절해도 안 움직임) -->
     <div class="panel">
-      <button class="bow-btn" id="bowBtn">한 번 더 사죄</button>
+      <div id="btnGroup" style="display: flex; gap: 10px">
+        <button class="bow-btn" id="bowBtn">한 번 더 사죄</button>
+      </div>
+    </div>
+
+    <!-- 점수판 -->
+    <div class="score-board" id="scoreBoard">
+      <div class="score-label">TOTAL SCORE</div>
+      <div class="score-value" id="scoreValue">
+        <span>0</span><span>0</span><span>0</span><span>0</span><span>0</span
+        ><span>0</span><span>0</span>
+      </div>
     </div>
 
     <!-- 108배 해탈 메시지 -->
@@ -91,6 +112,25 @@
 
     <script type="module">
       import { initPhase1 } from "./components/phase1.js";
+
+      function adjustScoreLayout() {
+        const scoreBoard = document.getElementById("scoreBoard");
+        const scoreContainer = document.getElementById("scoreContainer");
+        if (!scoreBoard || !scoreContainer) return;
+
+        if (window.innerWidth <= 720) {
+          if (scoreBoard.parentElement !== scoreContainer) {
+            scoreContainer.appendChild(scoreBoard);
+          }
+        } else {
+          if (scoreBoard.parentElement !== document.body) {
+            document.body.appendChild(scoreBoard);
+          }
+        }
+      }
+
+      window.addEventListener("resize", adjustScoreLayout);
+      adjustScoreLayout();
       initPhase1();
     </script>
   </body>
