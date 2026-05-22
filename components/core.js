@@ -172,9 +172,13 @@ export class PhaseController {
     playChime();
 
     const petalInterval = setInterval(spawnPetal, 180);
+    this.intervals.push(petalInterval);
     setTimeout(() => clearInterval(petalInterval), 10000);
     for (let i = 0; i < 30; i++) {
-      setTimeout(spawnPetal, i * 40);
+      const tid = setTimeout(spawnPetal, i * 40);
+      // We could track these timeouts if we wanted to be extremely robust,
+      // but they finish in 1.2s. Still, let's track them.
+      // Wait, let's just clear petals in cleanup and also ensure no new ones show.
     }
 
     if (this.btn) {
@@ -242,10 +246,18 @@ export class PhaseController {
     }
 
     // fade out petals
-    document.querySelectorAll(".petal").forEach((p) => {
-      p.style.transition = "opacity 1s ease";
-      p.style.opacity = "0";
-      setTimeout(() => p.remove(), 1000);
-    });
+    const fadeInterval = setInterval(() => {
+      document.querySelectorAll(".petal").forEach((p) => {
+        if (!p.style.transition) {
+          p.style.transition = "opacity 1s ease";
+          p.style.opacity = "0";
+        }
+      });
+    }, 50);
+
+    setTimeout(() => {
+      clearInterval(fadeInterval);
+      document.querySelectorAll(".petal").forEach((p) => p.remove());
+    }, 1000);
   }
 }

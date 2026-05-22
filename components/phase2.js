@@ -35,7 +35,7 @@ export function initPhase2() {
   function updateDepthUI() {
     tempEl.textContent = `${Math.round(currentDepth)}m`;
 
-    // 심해에 따른 어두워짐 (1000 ~ 3500) -> opacity (0 ~ 0.85)
+    // 심해에 따른 어두워짐. 1000~2500 구간에서는 서서히 어두워지고 3500에서는 완전 검은색에 가깝게.
     let ratio = (currentDepth - 1000) / 2500;
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
@@ -45,7 +45,8 @@ export function initPhase2() {
       overlay.style.opacity = "1";
     } else {
       overlay.style.background = "black";
-      overlay.style.opacity = (ratio * 0.85).toString();
+      // 1000m에서는 opacity 0 (남색 배경이 보임), 3500m에서는 opacity 0.9 (거의 검은색)
+      overlay.style.opacity = (ratio * 0.9).toString();
     }
 
     // 텍스트 경고
