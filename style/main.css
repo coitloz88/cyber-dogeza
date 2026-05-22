@@ -27,8 +27,8 @@ body {
 }
 body {
   position: relative;
-  height: 100svh;
-  min-height: 100svh;
+  height: 100vh;
+  min-height: 100vh;
 }
 
 /* ===== Scanline + CRT vignette (overlay, never shakes) ===== */
@@ -193,7 +193,6 @@ body::after {
   position: fixed;
   left: 50%;
   bottom: 6vh;
-  bottom: 6svh;
   transform: translateX(-50%);
   width: min(720px, 90vw);
   height: 26px;
@@ -251,7 +250,6 @@ body::after {
   flex-direction: column;
   align-items: center;
   padding: 4vh 2rem 0;
-  padding: 4svh 2rem 0;
   pointer-events: none;
 }
 
@@ -371,7 +369,6 @@ body.phase2 .sweat {
   position: absolute;
   left: 50%;
   bottom: 10vh;
-  bottom: 10svh;
   transform: translateX(-50%);
   z-index: 7;
   text-align: center;
@@ -859,11 +856,9 @@ body.liberated button.bow-btn {
   /* 인물 위치/크기 */
   .figure-wrap {
     bottom: 13vh;
-    bottom: 13svh;
   }
   .grill {
     bottom: 10vh;
-    bottom: 10svh;
     width: 85vw;
   }
   .dogeza {
@@ -874,6 +869,30 @@ body.liberated button.bow-btn {
   button.bow-btn {
     font-size: 0.85rem;
     padding: 7px 18px;
+  }
+}
+
+@supports (height: 100svh) {
+  body {
+    height: 100svh;
+    min-height: 100svh;
+  }
+  .stage {
+    padding: 4svh 2rem 0;
+  }
+  .figure-wrap {
+    bottom: 10svh;
+  }
+  .grill {
+    bottom: 6svh;
+  }
+  @media (max-width: 720px) {
+    .figure-wrap {
+      bottom: 13svh;
+    }
+    .grill {
+      bottom: 10svh;
+    }
   }
 }
 
