@@ -201,13 +201,15 @@ export function initPhase1() {
       updateTemperatureUI();
     },
     onBow: (timeDiff) => {
-      let bonus = 0;
-      if (timeDiff < 1000) {
-        bonus = Math.max(0, 100 - timeDiff / 10);
+      if (!controller.isLiberated) {
+        let bonus = 0;
+        if (timeDiff < 1000) {
+          bonus = Math.max(0, 100 - timeDiff / 10);
+        }
+        currentTemp += 50 + bonus;
+        if (currentTemp > 3500) currentTemp = 3500;
+        updateTemperatureUI();
       }
-      currentTemp += 50 + bonus;
-      if (currentTemp > 3500) currentTemp = 3500;
-      updateTemperatureUI();
 
       for (let i = 0; i < 20; i++) setTimeout(spawnEmber, i * 20);
     },
@@ -225,12 +227,17 @@ export function initPhase1() {
       nextBtn.textContent = "물 속으로 이동";
       nextBtn.style.background = "linear-gradient(180deg, #002244, #004466)";
       nextBtn.style.borderColor = "#00fff0";
+      nextBtn.style.display = "none";
 
       nextBtn.addEventListener("click", () => {
         controller.cleanup();
         initPhase2();
       });
       btnGroup.appendChild(nextBtn);
+
+      setTimeout(() => {
+        nextBtn.style.display = "inline-block";
+      }, 3000);
     },
     onCleanup: () => {
       clearInterval(emberInterval);

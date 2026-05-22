@@ -118,13 +118,15 @@ export function initPhase2() {
       updateDepthUI();
     },
     onBow: (timeDiff) => {
-      let bonus = 0;
-      if (timeDiff < 1000) {
-        bonus = Math.max(0, 100 - timeDiff / 10);
+      if (!controller.isLiberated) {
+        let bonus = 0;
+        if (timeDiff < 1000) {
+          bonus = Math.max(0, 100 - timeDiff / 10);
+        }
+        currentDepth += 50 + bonus;
+        if (currentDepth > 3500) currentDepth = 3500;
+        updateDepthUI();
       }
-      currentDepth += 50 + bonus;
-      if (currentDepth > 3500) currentDepth = 3500;
-      updateDepthUI();
 
       // 물 흔들림
       const scene = document.getElementById("scene");
@@ -161,12 +163,17 @@ export function initPhase2() {
       nextBtn.textContent = "불 속으로 이동";
       nextBtn.style.background = "linear-gradient(180deg, #3a0e08, #1a0a08)";
       nextBtn.style.borderColor = "#c8102e";
+      nextBtn.style.display = "none";
 
       nextBtn.addEventListener("click", () => {
         controller.cleanup();
         initPhase1();
       });
       btnGroup.appendChild(nextBtn);
+
+      setTimeout(() => {
+        nextBtn.style.display = "inline-block";
+      }, 3000);
     },
     onCleanup: () => {
       clearInterval(fishInterval);

@@ -668,6 +668,13 @@ body.liberated::after {
   );
   transition: background 3s ease;
 }
+body.phase2.liberated::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 255, 240, 0.15) 100%
+  );
+}
 body.liberated .glow {
   background: radial-gradient(
     ellipse at center top,
@@ -837,7 +844,7 @@ body.liberated button.bow-btn {
 /* ===== Diving Mask (🤿) ===== */
 .diving-mask {
   position: absolute;
-  top: 40%;
+  top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.6em; /* relative to dogeza emoji */
@@ -923,6 +930,9 @@ body.phase2 {
   --ink: #000a14;
   background: var(--ink);
 }
+body.phase2 .grill {
+  display: none;
+}
 body.phase2 .grid {
   background-image:
     linear-gradient(rgba(0, 255, 240, 0.1) 1px, transparent 1px),
@@ -997,10 +1007,12 @@ body.phase2 .glow {
 /* ===== Mobile Score Board adjustments ===== */
 @media (max-width: 720px) {
   .score-board {
-    top: calc(env(safe-area-inset-top, 0px) + 2.5rem);
-    right: 50%;
-    transform: translateX(50%);
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-top: 1rem;
     align-items: center;
+    transform: none;
   }
   .score-value {
     font-size: 2rem;

@@ -176,7 +176,13 @@ export class PhaseController {
       setTimeout(spawnPetal, i * 40);
     }
 
-    if (this.btn) this.btn.textContent = "계속 감사하기";
+    if (this.btn) {
+      this.btn.style.display = "none"; // Hide initially
+      setTimeout(() => {
+        this.btn.textContent = "계속 감사하기";
+        this.btn.style.display = "inline-block";
+      }, 3000);
+    }
 
     // Hook
     this.onLiberate();
@@ -228,8 +234,17 @@ export class PhaseController {
 
     // reset visual states
     if (this.dogeza) {
-      this.dogeza.textContent = "🙇"; // default
+      // restore the mask inside if it existed
+      const maskHtml = `<div class="diving-mask" id="divingMask">🤿</div>`;
+      this.dogeza.innerHTML = `🙇\n${maskHtml}`;
       this.dogeza.className = "dogeza";
     }
+
+    // fade out petals
+    document.querySelectorAll(".petal").forEach((p) => {
+      p.style.transition = "opacity 1s ease";
+      p.style.opacity = "0";
+      setTimeout(() => p.remove(), 1000);
+    });
   }
 }

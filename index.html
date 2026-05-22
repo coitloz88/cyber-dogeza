@@ -43,6 +43,8 @@
         <div class="subtitle">
           [ 진심사죄 모드 가동중<span class="blink">_</span> ]
         </div>
+        <!-- 점수판 (모바일 레이아웃 조정 시 이 위치로 들어오도록 래핑) -->
+        <div id="scoreContainer"></div>
       </div>
     </div>
     <!-- /.scene -->
@@ -93,7 +95,7 @@
     </div>
 
     <!-- 점수판 -->
-    <div class="score-board">
+    <div class="score-board" id="scoreBoard">
       <div class="score-label">TOTAL SCORE</div>
       <div class="score-value" id="scoreValue">
         <span>0</span><span>0</span><span>0</span><span>0</span><span>0</span
@@ -110,6 +112,25 @@
 
     <script type="module">
       import { initPhase1 } from "./components/phase1.js";
+
+      function adjustScoreLayout() {
+        const scoreBoard = document.getElementById("scoreBoard");
+        const scoreContainer = document.getElementById("scoreContainer");
+        if (!scoreBoard || !scoreContainer) return;
+
+        if (window.innerWidth <= 720) {
+          if (scoreBoard.parentElement !== scoreContainer) {
+            scoreContainer.appendChild(scoreBoard);
+          }
+        } else {
+          if (scoreBoard.parentElement !== document.body) {
+            document.body.appendChild(scoreBoard);
+          }
+        }
+      }
+
+      window.addEventListener("resize", adjustScoreLayout);
+      adjustScoreLayout();
       initPhase1();
     </script>
   </body>
