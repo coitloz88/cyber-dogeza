@@ -17,6 +17,8 @@ jobs:
       - uses: coitloz88/github-ripple@v1
         with:
           output-path: assets/ripple.svg
+      - name: Set day/night cycle to 120s
+        run: sed -i 's/dur="86400s"/dur="120s"/g' assets/ripple.svg
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: '🌊 ripple update'
