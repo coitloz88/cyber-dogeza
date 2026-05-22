@@ -37,7 +37,7 @@ body::before {
     rgba(0, 0, 0, 0) 4px
   );
   pointer-events: none;
-  z-index: 50;
+  z-index: 50; pointer-events: none;
   mix-blend-mode: multiply;
 }
 body::after {
@@ -50,11 +50,11 @@ body::after {
     rgba(0, 0, 0, 0.85) 100%
   );
   pointer-events: none;
-  z-index: 49;
+  z-index: 49; pointer-events: none;
 }
 
 /* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
-.scene {
+.scene { pointer-events: none;
   position: fixed;
   inset: 0;
 }
@@ -450,7 +450,7 @@ h1::before {
 }
 
 /* ===== Bottom panel (OUTSIDE .scene — doesn't shake) ===== */
-.panel {
+.panel { pointer-events: none;
   position: fixed;
   left: 50%;
   bottom: max(1rem, env(safe-area-inset-bottom));
@@ -571,7 +571,7 @@ button.bow-btn:active {
   position: fixed;
   inset: 0;
   background: white;
-  z-index: 100;
+  z-index: 100; pointer-events: none;
   pointer-events: none;
   opacity: 0;
 }
@@ -1035,4 +1035,7 @@ body.phase2 .glow {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.5s linear;
+}
+.panel * {
+  pointer-events: auto;
 }
