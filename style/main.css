@@ -17,12 +17,18 @@
 html,
 body {
   height: 100%;
+  min-height: 100%;
   overflow: hidden;
   background: var(--ink);
   color: var(--bone);
   font-family: "Noto Serif KR", serif;
   cursor: crosshair;
   word-break: keep-all;
+}
+body {
+  position: relative;
+  height: 100svh;
+  min-height: 100svh;
 }
 
 /* ===== Scanline + CRT vignette (overlay, never shakes) ===== */
@@ -56,7 +62,7 @@ body::after {
 
 /* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
 .scene { pointer-events: none;
-  position: fixed;
+  position: absolute;
   inset: 0;
 }
 .scene.shake {
@@ -187,6 +193,7 @@ body::after {
   position: fixed;
   left: 50%;
   bottom: 6vh;
+  bottom: 6svh;
   transform: translateX(-50%);
   width: min(720px, 90vw);
   height: 26px;
@@ -244,6 +251,7 @@ body::after {
   flex-direction: column;
   align-items: center;
   padding: 4vh 2rem 0;
+  padding: 4svh 2rem 0;
   pointer-events: none;
 }
 
@@ -363,6 +371,7 @@ body.phase2 .sweat {
   position: absolute;
   left: 50%;
   bottom: 10vh;
+  bottom: 10svh;
   transform: translateX(-50%);
   z-index: 7;
   text-align: center;
@@ -370,6 +379,7 @@ body.phase2 .sweat {
 }
 
 .dogeza {
+  position: relative;
   font-size: clamp(7rem, 16vw, 12rem);
   line-height: 1;
   display: inline-block;
@@ -475,7 +485,7 @@ body.phase2 .sweat {
 
 /* ===== Bottom panel (OUTSIDE .scene — doesn't shake) ===== */
 .panel { pointer-events: none;
-  position: fixed;
+  position: absolute;
   left: 50%;
   bottom: max(1rem, env(safe-area-inset-bottom));
   transform: translateX(-50%);
@@ -849,9 +859,11 @@ body.liberated button.bow-btn {
   /* 인물 위치/크기 */
   .figure-wrap {
     bottom: 13vh;
+    bottom: 13svh;
   }
   .grill {
     bottom: 10vh;
+    bottom: 10svh;
     width: 85vw;
   }
   .dogeza {
@@ -868,7 +880,7 @@ body.liberated button.bow-btn {
 /* ===== Diving Mask (🤿) ===== */
 .diving-mask {
   position: absolute;
-  top: calc(15% + 80px);
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.6em; /* relative to dogeza emoji */
@@ -951,8 +963,15 @@ body.liberated button.bow-btn {
 
 /* ===== Phase 2 Background/Colors ===== */
 body.phase2 {
-  --ink: #001133;
+  --ink: #0b3a7a;
   background: var(--ink);
+}
+body.phase2::after {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 140, 200, 0.12) 0%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
 }
 body.phase2 .grill {
   display: none;

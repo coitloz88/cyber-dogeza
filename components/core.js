@@ -246,18 +246,23 @@ export class PhaseController {
     }
 
     // fade out petals
-    const fadeInterval = setInterval(() => {
+    const fadePetals = () => {
       document.querySelectorAll(".petal").forEach((p) => {
-        if (!p.style.transition) {
-          p.style.transition = "opacity 1s ease";
-          p.style.opacity = "0";
-        }
+        if (p.classList.contains("petal-fade")) return;
+        p.classList.add("petal-fade");
+        const animations = p.getAnimations ? p.getAnimations() : [];
+        animations.forEach((anim) => anim.cancel());
+        p.style.transition = "opacity 1s ease, transform 1s ease";
+        p.style.opacity = "0";
+        p.style.transform = "translateY(20px) scale(0.85)";
       });
-    }, 50);
+    };
+    fadePetals();
+    const fadeInterval = setInterval(fadePetals, 100);
 
     setTimeout(() => {
       clearInterval(fadeInterval);
       document.querySelectorAll(".petal").forEach((p) => p.remove());
-    }, 1000);
+    }, 1100);
   }
 }

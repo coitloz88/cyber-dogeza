@@ -6,6 +6,7 @@ let emberInterval;
 
 export function initPhase1() {
   document.body.className = ""; // Reset body classes
+  document.body.style.background = "";
 
   // UI Setup for Phase 1
   document.getElementById("mainTitle").innerHTML =

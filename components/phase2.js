@@ -1,4 +1,4 @@
-import { getRandomLocation } from "./interface.js";
+import { lerpColor, getRandomLocation } from "./interface.js";
 import { PhaseController } from "./core.js";
 import { initPhase1 } from "./phase1.js";
 
@@ -31,6 +31,10 @@ export function initPhase2() {
   document.getElementById("scene").appendChild(overlay);
 
   let currentDepth = 1000;
+  const shallowTop = [10, 90, 180];
+  const shallowBottom = [0, 40, 110];
+  const deepTop = [2, 12, 35];
+  const deepBottom = [0, 0, 0];
 
   function updateDepthUI() {
     tempEl.textContent = `${Math.round(currentDepth)}m`;
@@ -39,6 +43,10 @@ export function initPhase2() {
     let ratio = (currentDepth - 1000) / 2500;
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
+
+    const topColor = lerpColor(shallowTop, deepTop, ratio);
+    const bottomColor = lerpColor(shallowBottom, deepBottom, ratio);
+    document.body.style.background = `linear-gradient(180deg, ${topColor} 0%, ${bottomColor} 100%)`;
 
     if (controller.isLiberated) {
       overlay.style.background = "radial-gradient(ellipse at center, transparent 30%, rgba(0, 255, 200, 0.4) 100%)";
