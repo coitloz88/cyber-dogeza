@@ -10,29 +10,60 @@ export function lerpColor(c1, c2, ratio) {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
 
-export const apologies = [
-  "정말로 죄송합니다",
-  "두 번 다시 안 하겠습니다",
-  "AI 봉인 완료",
-  "레포 청소하겠습니다",
-  "PR 닫겠습니다 전부",
-  "용서해주십시오",
-  "제 잘못입니다",
-  "사실 재밌었어",
-  "申し訳ございません",
-];
+import { lang } from "./i18n.js";
 
-export const celebrations = [
-  "감사합니다",
-  "용서받았다",
-  "이거지예",
-  "ㄹㅇㅋㅋ",
-  "ありがとうございます",
-  "평화로다",
-  "108배 ✓",
-  "善哉善哉",
-  "해탈",
-];
+const apologiesMap = {
+  ko: [
+    "정말로 죄송합니다",
+    "두 번 다시 안 하겠습니다",
+    "AI 봉인 완료",
+    "레포 청소하겠습니다",
+    "PR 닫겠습니다 전부",
+    "용서해주십시오",
+    "제 잘못입니다",
+    "사실 재밌었어",
+    "申し訳ございません",
+  ],
+  ja: [
+    "本当に申し訳ございません",
+    "二度といたしません",
+    "AI封印完了",
+    "リポジトリを掃除します",
+    "PRは全て閉じます",
+    "お許しください",
+    "私の責任です",
+    "実は楽しかった",
+    "本当に申し訳ございません",
+  ],
+};
+
+const celebrationsMap = {
+  ko: [
+    "감사합니다",
+    "용서받았다",
+    "이거지예",
+    "ㄹㅇㅋㅋ",
+    "ありがとうございます",
+    "평화로다",
+    "108배 ✓",
+    "善哉善哉",
+    "해탈",
+  ],
+  ja: [
+    "ありがとうございます",
+    "許された",
+    "これだね",
+    "草",
+    "ありがとうございます",
+    "平和なり",
+    "108回 ✓",
+    "善きかな",
+    "解脱",
+  ],
+};
+
+export const apologies = apologiesMap[lang] || apologiesMap.ko;
+export const celebrations = celebrationsMap[lang] || celebrationsMap.ko;
 
 // ===== 빰빠바밤 (Web Audio API로 합성) =====
 export function playChime() {

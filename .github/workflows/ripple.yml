@@ -1,7 +1,7 @@
 name: Ripple
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: "0 0 * * 0"
   workflow_dispatch:
   push:
     branches: [master, main]
@@ -21,5 +21,5 @@ jobs:
         run: sed -i 's/dur="86400s"/dur="120s"/g' assets/ripple.svg
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: '🌊 ripple update'
-          file_pattern: 'assets/ripple.svg'
+          commit_message: "🌊 ripple update"
+          file_pattern: "assets/ripple.svg"

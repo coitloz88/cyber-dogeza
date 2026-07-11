@@ -5,6 +5,7 @@ import {
   playChime,
   spawnPetal,
 } from "./interface.js";
+import { lang, translations } from "./i18n.js";
 
 export function initPhase1() {
   // ===== 불꽃 생성 =====
@@ -244,7 +245,7 @@ export function initPhase1() {
     }
 
     // 버튼 텍스트도 바꿈
-    btn.textContent = "계속 감사하기";
+    btn.textContent = translations[lang].btn_thanks;
   }
 
   btn.addEventListener("click", () => {
