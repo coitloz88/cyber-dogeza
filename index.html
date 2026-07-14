@@ -33,9 +33,11 @@
       </div>
 
       <div class="stage">
-        <div class="badge">⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠</div>
-        <h1>사이버<span class="stamp">불판</span>도게자</h1>
-        <div class="subtitle">
+        <div class="badge" data-i18n="badge">
+          ⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠
+        </div>
+        <h1 data-i18n="h1">사이버<span class="stamp">불판</span>도게자</h1>
+        <div class="subtitle" data-i18n="subtitle">
           [ 진심사죄 모드 가동중<span class="blink">_</span> ]
         </div>
       </div>
@@ -45,52 +47,67 @@
     <!-- UI HUD (씬 바깥 — 비네팅/스캔라인 위에 떠있음, 안 흔들림) -->
     <!-- 죄목 (데스크탑 우측, 모바일 숨김) -->
     <div class="culprits">
-      <div class="label">사건 경위 / EVIDENCE</div>
-      AI 에이전트로 PR 양산<br />
-      <span class="name">Jules</span> · <span class="name">Codex</span> ·
-      <span class="name">Claude</span><br />
-      레포지토리 오염<br />
-      <span class="strike">변명의 여지 없음</span>
+      <div class="label" data-i18n="label_evidence">사건 경위 / EVIDENCE</div>
+      <span data-i18n="evidence_1">AI 에이전트로 PR 양산<br /></span>
+      <span data-i18n="evidence_names"
+        ><span class="name">Jules</span> · <span class="name">Codex</span> ·
+        <span class="name">Claude</span><br
+      /></span>
+      <span data-i18n="evidence_2">레포지토리 오염<br /></span>
+      <span class="strike" data-i18n="evidence_strike">변명의 여지 없음</span>
     </div>
 
     <!-- 영수증 (데스크탑 좌측, 모바일 상단 스트립) -->
     <div class="receipt">
-      <div class="label">// SAJOE.RECEIPT</div>
+      <div class="label" data-i18n="label_receipt">// SAJOE.RECEIPT</div>
       <div class="row mobile-hide">
-        <span>피해자</span><span class="v">선생님</span>
+        <span data-i18n="receipt_victim">피해자</span
+        ><span class="v" data-i18n="receipt_victim_v">선생님</span>
       </div>
       <div class="row mobile-hide">
-        <span>가해자</span><span class="v">나</span>
+        <span data-i18n="receipt_attacker">가해자</span
+        ><span class="v" data-i18n="receipt_attacker_v">나</span>
       </div>
       <div class="row mobile-hide">
-        <span>온도</span><span class="v" id="temperature">1200°C</span>
+        <span data-i18n="receipt_temp">온도</span
+        ><span class="v" id="temperature">1200°C</span>
       </div>
       <div class="row mobile-hide">
-        <span>상태</span><span class="v">정좌중</span>
+        <span data-i18n="receipt_status">상태</span
+        ><span class="v" data-i18n="receipt_status_v">정좌중</span>
       </div>
       <div class="row divider">
-        <span>절한 횟수</span
-        ><span class="v"><span id="count">1</span> 회</span>
+        <span data-i18n="receipt_count">절한 횟수</span
+        ><span class="v" data-i18n="receipt_count_v"
+          ><span id="count">1</span> 회</span
+        >
       </div>
       <div class="row">
-        <span>체류시간</span><span class="v" id="timer">0:00</span>
+        <span data-i18n="receipt_time">체류시간</span
+        ><span class="v" id="timer">0:00</span>
       </div>
     </div>
 
     <!-- 하단 패널 (씬 바깥 — 절해도 안 움직임) -->
     <div class="panel">
-      <button class="bow-btn" id="bowBtn">한 번 더 사죄</button>
+      <button class="bow-btn" id="bowBtn" data-i18n="btn_bow">
+        한 번 더 사죄
+      </button>
     </div>
 
     <!-- 108배 해탈 메시지 -->
     <div class="liberation-msg" id="liberationMsg">
-      <div class="big">解 脱</div>
-      <div class="sub">108배 완료 · 사죄가 받아들여졌습니다</div>
-      <div class="english">LIBERATION ACHIEVED</div>
+      <div class="big" data-i18n="lib_big">解 脱</div>
+      <div class="sub" data-i18n="lib_sub">
+        108배 완료 · 사죄가 받아들여졌습니다
+      </div>
+      <div class="english" data-i18n="lib_en">LIBERATION ACHIEVED</div>
     </div>
 
     <script type="module">
+      import { applyI18n } from "./components/i18n.js";
       import { initPhase1 } from "./components/phase1.js";
+      applyI18n();
       initPhase1();
     </script>
   </body>
