@@ -134,15 +134,62 @@ const phase3LocationsMap = {
   ],
 };
 
+const phase4LocationsMap = {
+  ko: [
+    "에베레스트 상공",
+    "여의도 63빌딩 위",
+    "인천공항 관제탑 옆",
+    "뭉게구름 9단",
+    "성층권 입구",
+    "제주도 상공",
+    "라퓨타 근처",
+    "독수리 둥지 위",
+  ],
+  ja: [
+    "エベレスト上空",
+    "汝矣島63ビルの上",
+    "仁川空港管制塔の隣",
+    "入道雲9段",
+    "成層圏の入り口",
+    "済州島上空",
+    "ラピュタの近く",
+    "鷲の巣の上",
+  ],
+};
+
+const phase5LocationsMap = {
+  ko: [
+    "국제우주정거장 옆",
+    "달의 뒷면",
+    "화성 궤도",
+    "스타링크 사이",
+    "카이퍼 벨트",
+    "안드로메다 은하",
+    "블랙홀 사건의 지평선",
+    "테슬라 로드스터 옆",
+  ],
+  ja: [
+    "国際宇宙ステーションの隣",
+    "月の裏側",
+    "火星軌道",
+    "スターリンクの間",
+    "カイパーベルト",
+    "アンドロメダ銀河",
+    "ブラックホールの事象の地平面",
+    "テスラ・ロードスターの隣",
+  ],
+};
+
+const locationMaps = {
+  1: phase1LocationsMap,
+  2: phase2LocationsMap,
+  3: phase3LocationsMap,
+  4: phase4LocationsMap,
+  5: phase5LocationsMap,
+};
+
 export function getRandomLocation(phase) {
-  let map;
-  if (phase === 1) {
-    map = phase1LocationsMap;
-  } else if (phase === 2) {
-    map = phase2LocationsMap;
-  } else {
-    map = phase3LocationsMap;
-  }
+  const map = locationMaps[phase] || phase1LocationsMap;
   const arr = map[lang] || map.ko;
   return arr[Math.floor(Math.random() * arr.length)];
 }

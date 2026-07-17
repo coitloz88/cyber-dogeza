@@ -939,6 +939,20 @@ body.liberated button.bow-btn {
   }
 }
 
+/* Phase별 머리 장식 위치 오버라이드 (기본 top:30%은 얼굴 위치, 🤿용) */
+body.phase3 .diving-mask {
+  top: -2%; /* 🍄 버섯이 머리 위에 얹히도록 */
+}
+body.phase4 .diving-mask {
+  top: -18%; /* 🪂 낙하산이 머리 위에 펼쳐지도록 */
+  font-size: 0.8em;
+}
+body.phase5 .diving-mask {
+  top: 22%; /* 🫙 유리병 헬멧이 얼굴을 감싸도록 */
+  font-size: 0.85em;
+  opacity: 0.85;
+}
+
 /* ===== Score Board ===== */
 .score-board {
   position: fixed;
@@ -1234,6 +1248,94 @@ body.phase3 .grill::before {
   );
 }
 
+/* ===== Phase 4 Background/Colors (Sky) ===== */
+body.phase4 {
+  --ink: #6aa8dc;
+  background: var(--ink);
+}
+body.phase4::after {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(10, 20, 60, 0.6) 100%
+  );
+}
+body.phase4 .grid::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+body.phase4 .glow {
+  background: radial-gradient(
+    ellipse at center top,
+    transparent 0%,
+    transparent 35%,
+    #7ab8ec 60%,
+    #4a78b8 90%
+  );
+  animation: pulseWater 4s ease-in-out infinite alternate;
+}
+
+/* 구름 방석 발판 */
+body.phase4 .grill {
+  --grill-c1: #ffffff;
+  --grill-c2: #dceafc;
+  --grill-c3: #9cbde0;
+  --grill-glow1: rgba(255, 255, 255, 0.9);
+  --grill-glow2: rgba(160, 200, 255, 0.6);
+  border-radius: 999px;
+  filter: blur(1.5px);
+}
+body.phase4 .grill::before {
+  background: none;
+}
+
+/* ===== Phase 5 Background/Colors (Space) ===== */
+body.phase5 {
+  --ink: #06030e;
+  background: var(--ink);
+}
+body.phase5::after {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(120, 80, 220, 0.08) 0%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+}
+body.phase5 .grid::before {
+  background-image:
+    linear-gradient(rgba(176, 112, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(176, 112, 255, 0.08) 1px, transparent 1px);
+}
+body.phase5 .glow {
+  background: radial-gradient(
+    ellipse at center top,
+    transparent 0%,
+    transparent 35%,
+    #2a1a5c 60%,
+    #0a0518 90%
+  );
+  animation: pulseWater 4s ease-in-out infinite alternate;
+}
+
+/* 우주선 금속 패널 발판 */
+body.phase5 .grill {
+  --grill-c1: #3a3a4a;
+  --grill-c2: #5a5a70;
+  --grill-c3: #1a1a24;
+  --grill-glow1: rgba(176, 112, 255, 0.5);
+  --grill-glow2: rgba(120, 80, 220, 0.45);
+}
+body.phase5 .grill::before {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 44px,
+    rgba(176, 112, 255, 0.35) 44px,
+    rgba(176, 112, 255, 0.35) 46px
+  );
+}
+
 /* ===== Creatures (Phase 3) ===== */
 .creature {
   position: absolute;
@@ -1254,6 +1356,40 @@ body.phase3 .grill::before {
 
 /* ===== Leaf Burst (Phase 3 bow effect) ===== */
 .leaf-burst {
+  position: absolute;
+  font-size: 1.3rem;
+  z-index: 8;
+  pointer-events: none;
+  animation: floatUp 2s ease-in forwards;
+}
+
+/* ===== Feathers / Clouds (Phase 4 ambient) ===== */
+.feather {
+  position: fixed;
+  top: -40px;
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* ===== Wind Burst (Phase 4 bow effect) ===== */
+.wind-burst {
+  position: absolute;
+  font-size: 1.3rem;
+  z-index: 8;
+  pointer-events: none;
+  animation: floatUp 2s ease-in forwards;
+}
+
+/* ===== Stars (Phase 5 ambient) ===== */
+.star {
+  position: fixed;
+  z-index: 7;
+  pointer-events: none;
+  text-shadow: 0 0 8px rgba(200, 180, 255, 0.8);
+}
+
+/* ===== Star Burst (Phase 5 bow effect) ===== */
+.star-burst {
   position: absolute;
   font-size: 1.3rem;
   z-index: 8;

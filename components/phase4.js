@@ -1,29 +1,29 @@
 import { lerpColor, getRandomLocation } from "./interface.js";
 import { PhaseController } from "./core.js";
-import { initPhase4 } from "./phase4.js";
+import { initPhase5 } from "./phase5.js";
 import { lang, translations } from "./i18n.js";
 
 let creatureInterval;
-let leafInterval;
+let featherInterval;
 
-export function initPhase3() {
-  document.body.className = "phase3";
+export function initPhase4() {
+  document.body.className = "phase4";
 
-  // UI Setup for Phase 3
-  document.title = translations[lang].title_p3;
-  document.getElementById("mainTitle").innerHTML = translations[lang].h1_p3;
-  document.getElementById("location").textContent = getRandomLocation(3);
-  document.getElementById("sweatEffect").textContent = "🍃";
+  // UI Setup for Phase 4
+  document.title = translations[lang].title_p4;
+  document.getElementById("mainTitle").innerHTML = translations[lang].h1_p4;
+  document.getElementById("location").textContent = getRandomLocation(4);
+  document.getElementById("sweatEffect").textContent = "💨";
   document.getElementById("tempLabel").textContent =
-    translations[lang].receipt_forest;
+    translations[lang].receipt_altitude;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "100m";
-  tempEl.style.color = "#7ade4a";
-  tempEl.style.textShadow = "0 0 6px #2a8a2a";
+  tempEl.style.color = "#87cefa";
+  tempEl.style.textShadow = "0 0 6px #4a90d8";
 
   const divingMask = document.getElementById("divingMask");
-  divingMask.textContent = "🍄";
+  divingMask.textContent = "🪂";
   divingMask.style.display = "block";
   divingMask.classList.remove("fly-away");
 
@@ -32,75 +32,74 @@ export function initPhase3() {
   overlay.className = "depth-overlay";
   document.getElementById("scene").appendChild(overlay);
 
-  let currentDepth = 100;
-  const shallowTopRgb = [34, 80, 38];
-  const shallowBottomRgb = [12, 40, 20];
-  const deepTopRgb = [4, 12, 6];
-  const deepBottomRgb = [0, 0, 0];
+  let currentAlt = 100;
+  const lowTopRgb = [96, 165, 230];
+  const lowBottomRgb = [150, 200, 240];
+  const highTopRgb = [16, 24, 80];
+  const highBottomRgb = [60, 90, 160];
 
-  function updateForestUI() {
-    tempEl.textContent = `${Math.round(currentDepth)}m`;
+  function updateSkyUI() {
+    tempEl.textContent = `${Math.round(currentAlt)}m`;
 
-    // 숲이 깊어질수록 어두워짐. 100~2500 구간에서 서서히 칠흑으로.
-    let ratio = (currentDepth - 100) / 2400;
+    // 고도가 오를수록 하늘 -> 성층권 남색.
+    let ratio = (currentAlt - 100) / 2400;
     if (ratio < 0) ratio = 0;
     if (ratio > 1) ratio = 1;
 
-    const topColor = lerpColor(shallowTopRgb, deepTopRgb, ratio);
-    const bottomColor = lerpColor(shallowBottomRgb, deepBottomRgb, ratio);
+    const topColor = lerpColor(lowTopRgb, highTopRgb, ratio);
+    const bottomColor = lerpColor(lowBottomRgb, highBottomRgb, ratio);
     document.body.style.background = `linear-gradient(180deg, ${topColor} 0%, ${bottomColor} 100%)`;
 
     if (controller.isLiberated) {
       overlay.style.background =
-        "radial-gradient(ellipse at center, transparent 30%, rgba(140, 255, 120, 0.35) 100%)";
+        "radial-gradient(ellipse at center, transparent 30%, rgba(255, 240, 180, 0.4) 100%)";
       overlay.style.opacity = "1";
     } else {
       overlay.style.background = "black";
-      overlay.style.opacity = (ratio * 0.85).toString();
+      // 하늘이므로 다른 페이즈보다 옅게.
+      overlay.style.opacity = (ratio * 0.5).toString();
     }
 
     // 텍스트 경고
-    if (currentDepth >= 3000) {
+    if (currentAlt >= 3000) {
       tempEl.style.color = "#ff0000";
       tempEl.style.textShadow = "0 0 10px #ff0000";
-    } else if (currentDepth >= 2000) {
+    } else if (currentAlt >= 2000) {
       tempEl.style.color = "#ffb347";
       tempEl.style.textShadow = "0 0 8px #ff6a1a";
     } else {
-      tempEl.style.color = "#7ade4a";
-      tempEl.style.textShadow = "0 0 6px #2a8a2a";
+      tempEl.style.color = "#87cefa";
+      tempEl.style.textShadow = "0 0 6px #4a90d8";
     }
   }
 
-  function spawnLeafBurst(x, y) {
-    const l = document.createElement("div");
-    l.className = "leaf-burst";
-    l.textContent = "🍃";
-    l.style.left = x + "px";
-    l.style.top = y + "px";
-    l.style.fontSize = 1 + Math.random() * 0.8 + "rem";
-    document.body.appendChild(l);
+  function spawnWindBurst(x, y) {
+    const w = document.createElement("div");
+    w.className = "wind-burst";
+    w.textContent = "💨";
+    w.style.left = x + "px";
+    w.style.top = y + "px";
+    w.style.fontSize = 1 + Math.random() * 0.8 + "rem";
+    document.body.appendChild(w);
 
     setTimeout(() => {
-      if (l.parentNode) l.remove();
+      if (w.parentNode) w.remove();
     }, 2000);
   }
 
   function spawnCreature() {
-    const dayCreatures = ["🦋", "🐦", "🐿️", "🐇"];
-    const nightBeasts = ["🦉", "🐺", "🐍", "🕷️"];
+    const lowFlyers = ["🕊️", "🦅", "🎈", "🪁"];
+    const highFlyers = ["✈️", "🚁", "🛩️", "🦢"];
     const c = document.createElement("div");
     c.className = "creature";
 
-    // 심림 맹수 확률 (깊이에 비례)
-    let ratio = (currentDepth - 100) / 2400;
+    // 고고도 비행체 확률 (고도에 비례)
+    let ratio = (currentAlt - 100) / 2400;
     if (Math.random() < ratio) {
-      c.textContent =
-        nightBeasts[Math.floor(Math.random() * nightBeasts.length)];
-      c.style.filter = "drop-shadow(0 0 10px rgba(255, 60, 0, 0.6))";
+      c.textContent = highFlyers[Math.floor(Math.random() * highFlyers.length)];
+      c.style.filter = "drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))";
     } else {
-      c.textContent =
-        dayCreatures[Math.floor(Math.random() * dayCreatures.length)];
+      c.textContent = lowFlyers[Math.floor(Math.random() * lowFlyers.length)];
     }
 
     c.style.top = 10 + Math.random() * 70 + "vh";
@@ -122,37 +121,38 @@ export function initPhase3() {
   }
   creatureInterval = setInterval(spawnCreature, 3000);
 
-  function spawnLeaf() {
-    const l = document.createElement("div");
-    l.className = "leaf";
-    l.textContent = ["🍂", "🍁", "🍃"][Math.floor(Math.random() * 3)];
-    l.style.left = Math.random() * 100 + "vw";
-    l.style.fontSize = 0.6 + Math.random() * 0.9 + "rem";
-    document.body.appendChild(l);
+  function spawnFeather() {
+    const f = document.createElement("div");
+    f.className = "feather";
+    f.textContent = ["🪶", "☁️", "🫧"][Math.floor(Math.random() * 3)];
+    f.style.left = Math.random() * 100 + "vw";
+    f.style.fontSize = 0.6 + Math.random() * 0.9 + "rem";
+    document.body.appendChild(f);
 
+    // 하늘이므로 낙하보다 좌우로 흘러가는 완만한 대각선 하강.
     const drift = (Math.random() - 0.5) * 120;
     const dur = 8000 + Math.random() * 6000;
-    l.animate(
+    f.animate(
       [
         { transform: "translate(0, 0) rotate(0deg)", opacity: 0.9 },
         {
-          transform: `translate(${drift}px, 105vh) rotate(${(Math.random() - 0.5) * 360}deg)`,
-          opacity: 0.3,
+          transform: `translate(${drift * 4}px, 30vh) rotate(${(Math.random() - 0.5) * 180}deg)`,
+          opacity: 0.2,
         },
       ],
       { duration: dur, easing: "linear" },
-    ).onfinish = () => l.remove();
+    ).onfinish = () => f.remove();
   }
-  leafInterval = setInterval(spawnLeaf, 600);
+  featherInterval = setInterval(spawnFeather, 600);
 
   const controller = new PhaseController({
-    phaseName: "Phase3",
+    phaseName: "Phase4",
     maxCount: 108,
     onTick: () => {
-      let drop = Math.round((currentDepth - 100) / 45);
-      currentDepth -= drop;
-      if (currentDepth < 100) currentDepth = 100;
-      updateForestUI();
+      let drop = Math.round((currentAlt - 100) / 45);
+      currentAlt -= drop;
+      if (currentAlt < 100) currentAlt = 100;
+      updateSkyUI();
     },
     onBow: (timeDiff) => {
       if (!controller.isLiberated) {
@@ -160,45 +160,45 @@ export function initPhase3() {
         if (timeDiff < 1000) {
           bonus = Math.max(0, 100 - timeDiff / 10);
         }
-        currentDepth += 50 + bonus;
-        if (currentDepth > 3500) currentDepth = 3500;
-        updateForestUI();
+        currentAlt += 50 + bonus;
+        if (currentAlt > 3500) currentAlt = 3500;
+        updateSkyUI();
       }
 
-      // 절할 때마다 주인공 주변에서 나뭇잎 흩날림
+      // 절할 때마다 주인공 주변에서 바람 발생
       const dogezaRect = document
         .getElementById("dogeza")
         .getBoundingClientRect();
       for (let i = 0; i < 3; i++) {
-        spawnLeafBurst(
+        spawnWindBurst(
           dogezaRect.left + Math.random() * dogezaRect.width,
           dogezaRect.top + Math.random() * 50,
         );
       }
     },
     onLiberate: () => {
-      currentDepth = 0;
+      currentAlt = 0;
       tempEl.textContent = "0m";
       tempEl.style.color = "#4ade80";
       tempEl.style.textShadow = "0 0 10px #4ade80";
-      updateForestUI();
+      updateSkyUI();
 
-      // 버섯 날아가기
+      // 낙하산 날아가기
       divingMask.classList.add("fly-away");
 
-      // '하늘로 이동' 버튼 추가
+      // '우주로 이동' 버튼 추가
       const btnGroup = document.getElementById("btnGroup");
       const nextBtn = document.createElement("button");
       nextBtn.className = "bow-btn";
       nextBtn.id = "nextPhaseBtn";
-      nextBtn.textContent = translations[lang].btn_to_sky;
-      nextBtn.style.background = "linear-gradient(180deg, #1a3a5c, #0a1a2c)";
-      nextBtn.style.borderColor = "#87cefa";
+      nextBtn.textContent = translations[lang].btn_to_space;
+      nextBtn.style.background = "linear-gradient(180deg, #1a0a3a, #0a0a1a)";
+      nextBtn.style.borderColor = "#b070ff";
       nextBtn.style.display = "none";
 
       nextBtn.addEventListener("click", () => {
         controller.cleanup();
-        initPhase4();
+        initPhase5();
       });
       btnGroup.appendChild(nextBtn);
 
@@ -208,26 +208,26 @@ export function initPhase3() {
     },
     onCleanup: () => {
       clearInterval(creatureInterval);
-      clearInterval(leafInterval);
+      clearInterval(featherInterval);
       document.removeEventListener("click", clickEffect);
       overlay.remove();
 
       const nextBtn = document.getElementById("nextPhaseBtn");
       if (nextBtn) nextBtn.remove();
 
-      // 생물/나뭇잎 정리
+      // 생물/깃털/바람 정리
       document
-        .querySelectorAll(".creature, .leaf, .leaf-burst")
+        .querySelectorAll(".creature, .feather, .wind-burst")
         .forEach((el) => el.remove());
     },
   });
 
-  // 클릭하면 나뭇잎
+  // 클릭하면 바람
   function clickEffect(e) {
     if (e.target.tagName === "BUTTON") return;
     if (controller.isLiberated) return;
     for (let i = 0; i < 3; i++) {
-      spawnLeafBurst(
+      spawnWindBurst(
         e.clientX + (Math.random() - 0.5) * 40,
         e.clientY + (Math.random() - 0.5) * 40,
       );
@@ -237,6 +237,6 @@ export function initPhase3() {
 
   controller.start();
 
-  // phase3 자체 그라디언트 즉시 설정 (이전 phase2 배경 잔상 방지)
-  updateForestUI();
+  // phase4 자체 그라디언트 즉시 설정 (이전 phase3 배경 잔상 방지)
+  updateSkyUI();
 }
