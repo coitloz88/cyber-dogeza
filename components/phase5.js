@@ -34,6 +34,10 @@ export function initPhase5() {
   overlay.className = "depth-overlay";
   document.getElementById("scene").appendChild(overlay);
 
+  // 해탈 연출용 머스크 따봉 사진 프리로드
+  const muskImg = new Image();
+  muskImg.src = "./assets/musk-thumbs-up.png";
+
   let currentKm = 100;
   const nearTopRgb = [10, 10, 40];
   const nearBottomRgb = [30, 20, 60];
@@ -229,11 +233,25 @@ export function initPhase5() {
       }
     },
     onLiberate: () => {
+      // 화성 도착 overlay 연출 (붉은 화성 글로우)
       currentKm = 0;
-      tempEl.textContent = "0km";
+      updateSpaceUI();
+
+      // 해탈 결과: 화성 도착 거리/장소 (색은 해탈 녹색 유지)
+      // core가 해탈 후 onTick을 멈추므로 아래 값은 덮어써지지 않음
+      tempEl.textContent = translations[lang].dist_mars;
       tempEl.style.color = "#4ade80";
       tempEl.style.textShadow = "0 0 10px #4ade80";
-      updateSpaceUI();
+      document.getElementById("location").textContent =
+        translations[lang].loc_mars;
+
+      // 머스크 따봉 사진 배경 표출
+      const musk = document.createElement("img");
+      musk.className = "musk-overlay";
+      musk.src = "./assets/musk-thumbs-up.png";
+      musk.alt = "";
+      document.body.appendChild(musk);
+      setTimeout(() => musk.remove(), 5200);
 
       // 화성 도착 🚀 대형 표출
       spawnMuskMessage(true);
@@ -274,6 +292,9 @@ export function initPhase5() {
       document
         .querySelectorAll(".creature, .star, .star-burst")
         .forEach((el) => el.remove());
+
+      // 5초 내 페이즈 이동 대비: 머스크 배경 사진 제거
+      document.querySelectorAll(".musk-overlay").forEach((el) => el.remove());
     },
   });
 
