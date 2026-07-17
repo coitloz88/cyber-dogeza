@@ -881,7 +881,7 @@ body.liberated button.bow-btn {
 
   /* 타이틀 영역 축소 (상단 receipt 스트립 안 가리게) */
   .stage {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
+    padding-top: calc(env(safe-area-inset-top, 0px) + 6rem);
   }
   h1 {
     font-size: clamp(2.2rem, 11vw, 4rem);
@@ -890,9 +890,7 @@ body.liberated button.bow-btn {
     display: none;
   }
   .badge {
-    font-size: 0.6rem;
-    padding: 4px 10px;
-    letter-spacing: 0.3em;
+    display: none;
   }
   .subtitle {
     font-size: 0.75rem;
@@ -933,6 +931,9 @@ body.liberated button.bow-btn {
     bottom: 6svh;
   }
   @media (max-width: 720px) {
+    .stage {
+      padding-top: calc(env(safe-area-inset-top, 0px) + 6rem);
+    }
     .figure-wrap {
       bottom: 13svh;
     }
@@ -970,7 +971,7 @@ body.liberated button.bow-btn {
 
 /* Phase별 머리 장식 위치 오버라이드 (기본 top:30%은 얼굴 위치, 🤿용) */
 body.phase2 .diving-mask {
-  top: 42%; /* 🤿 수경이 🙇 얼굴(눈 부위)을 덮도록 */
+  top: 52%; /* 🤿 수경이 🙇 얼굴(눈 부위)을 덮도록 */
 }
 body.phase3 .diving-mask {
   top: -2%; /* 🍄 버섯이 머리 위에 얹히도록 */
