@@ -14,12 +14,13 @@ components/
   interface.js          # lerpColor, playChime, 메시지 풀(apologies/celebrations)
   phase1.js             # Phase 1 초기화/정리 (불판, 온도 시뮬레이션)
   phase2.js             # Phase 2 초기화/정리 (수중, 수심 시뮬레이션)
+  phase3.js             # Phase 3 초기화/정리 (숲속, 숲 깊이 시뮬레이션)
 assets/ripple.svg       # GitHub Actions가 자동 생성하는 contributor 그래프
 ```
 
 ## 게임 흐름
 
-**Phase 1 (불판)** → 108번 절 → liberation → **Phase 2 (수중)** → 108번 절 → liberation → Phase 1 반복
+**Phase 1 (불판)** → 108번 절 → **Phase 2 (수중)** → 108번 절 → **Phase 3 (숲속)** → 108번 절 → Phase 1 반복
 
 - 절할 때마다 온도/수심 증가, 250ms 틱마다 자연 감소
 - 1초 이내 연속 클릭 시 콤보 보너스 (`max(0, 2000 - timeDiff * 2)`)
@@ -46,7 +47,8 @@ Phase 전환 시 반드시 `controller.cleanup()`을 먼저 호출해야 한다.
 ## DOM 구조 주의사항
 
 `#dogeza` 안에 `#dogezaEmoji`(span)와 `#divingMask`(div)가 함께 있다.  
-`dogeza.textContent`로 이모지를 바꾸면 `#divingMask`가 삭제되므로, 반드시 `#dogezaEmoji`의 `textContent`만 변경한다.
+`dogeza.textContent`로 이모지를 바꾸면 `#divingMask`가 삭제되므로, 반드시 `#dogezaEmoji`의 `textContent`만 변경한다.  
+`#divingMask`는 페이즈별 머리 장식으로 재사용된다 (Phase 2 🤿 / Phase 3 🍄). 각 Phase 진입 시 `textContent`를 해당 장식으로 설정해야 한다.
 
 ## 반응형
 

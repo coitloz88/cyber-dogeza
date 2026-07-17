@@ -1,6 +1,6 @@
 import { lerpColor, getRandomLocation } from "./interface.js";
 import { PhaseController } from "./core.js";
-import { initPhase1 } from "./phase1.js";
+import { initPhase3 } from "./phase3.js";
 import { lang, translations } from "./i18n.js";
 
 let fishInterval;
@@ -23,6 +23,7 @@ export function initPhase2() {
   tempEl.style.textShadow = "0 0 6px #0088cc";
 
   const divingMask = document.getElementById("divingMask");
+  divingMask.textContent = "🤿";
   divingMask.style.display = "block";
   divingMask.classList.remove("fly-away");
 
@@ -213,14 +214,14 @@ export function initPhase2() {
       const nextBtn = document.createElement("button");
       nextBtn.className = "bow-btn";
       nextBtn.id = "nextPhaseBtn";
-      nextBtn.textContent = translations[lang].btn_to_fire;
-      nextBtn.style.background = "linear-gradient(180deg, #3a0e08, #1a0a08)";
-      nextBtn.style.borderColor = "#c8102e";
+      nextBtn.textContent = translations[lang].btn_to_forest;
+      nextBtn.style.background = "linear-gradient(180deg, #0e3a14, #0a1a0c)";
+      nextBtn.style.borderColor = "#4ade80";
       nextBtn.style.display = "none";
 
       nextBtn.addEventListener("click", () => {
         controller.cleanup();
-        initPhase1();
+        initPhase3();
       });
       btnGroup.appendChild(nextBtn);
 
