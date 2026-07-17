@@ -16,6 +16,8 @@ export function initPhase5() {
   document.getElementById("sweatEffect").textContent = "✨";
   document.getElementById("tempLabel").textContent =
     translations[lang].receipt_space;
+  document.getElementById("statusLabel").textContent =
+    translations[lang].status_floating;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "100km";
@@ -133,7 +135,7 @@ export function initPhase5() {
     c.className = "creature";
 
     // 원거리 물체 확률 (거리에 비례)
-    let ratio = (currentKm - 100) / 2400;
+    let ratio = Math.min(1, (currentKm - 100) / 2400);
     if (Math.random() < ratio) {
       c.textContent = farBodies[Math.floor(Math.random() * farBodies.length)];
       c.style.filter = "drop-shadow(0 0 10px rgba(255, 80, 30, 0.6))";
@@ -206,7 +208,7 @@ export function initPhase5() {
           bonus = Math.max(0, 100 - timeDiff / 10);
         }
         currentKm += 50 + bonus;
-        if (currentKm > 3500) currentKm = 3500;
+        if (currentKm > 100000) currentKm = 100000;
         updateSpaceUI();
 
         // 6번째 절마다 "화성 갈끄니까" 표출

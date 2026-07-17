@@ -16,6 +16,8 @@ export function initPhase4() {
   document.getElementById("sweatEffect").textContent = "💨";
   document.getElementById("tempLabel").textContent =
     translations[lang].receipt_altitude;
+  document.getElementById("statusLabel").textContent =
+    translations[lang].status_gliding;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "100m";
@@ -94,7 +96,7 @@ export function initPhase4() {
     c.className = "creature";
 
     // 고고도 비행체 확률 (고도에 비례)
-    let ratio = (currentAlt - 100) / 2400;
+    let ratio = Math.min(1, (currentAlt - 100) / 2400);
     if (Math.random() < ratio) {
       c.textContent = highFlyers[Math.floor(Math.random() * highFlyers.length)];
       c.style.filter = "drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))";
@@ -161,7 +163,7 @@ export function initPhase4() {
           bonus = Math.max(0, 100 - timeDiff / 10);
         }
         currentAlt += 50 + bonus;
-        if (currentAlt > 3500) currentAlt = 3500;
+        if (currentAlt > 100000) currentAlt = 100000;
         updateSkyUI();
       }
 

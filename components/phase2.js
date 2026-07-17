@@ -16,6 +16,8 @@ export function initPhase2() {
   document.getElementById("sweatEffect").textContent = "🫧";
   document.getElementById("tempLabel").textContent =
     translations[lang].receipt_depth;
+  document.getElementById("statusLabel").textContent =
+    translations[lang].status_diving;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "1000m";
@@ -104,7 +106,7 @@ export function initPhase2() {
 
     // 심해어 확률 (깊이에 비례)
     let isDeepSea = false;
-    let ratio = (currentDepth - 1000) / 2500;
+    let ratio = Math.min(1, (currentDepth - 1000) / 2500);
     if (Math.random() < ratio) {
       isDeepSea = true;
     }
@@ -176,7 +178,7 @@ export function initPhase2() {
           bonus = Math.max(0, 100 - timeDiff / 10);
         }
         currentDepth += 50 + bonus;
-        if (currentDepth > 3500) currentDepth = 3500;
+        if (currentDepth > 100000) currentDepth = 100000;
         updateDepthUI();
       }
 
