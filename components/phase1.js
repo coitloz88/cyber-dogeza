@@ -18,6 +18,8 @@ export function initPhase1() {
   document.getElementById("divingMask").style.display = "none";
   document.getElementById("tempLabel").textContent =
     translations[lang].receipt_temp;
+  document.getElementById("statusLabel").textContent =
+    translations[lang].receipt_status_v;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "1200°C";
@@ -165,7 +167,7 @@ export function initPhase1() {
     grillEl.style.setProperty("--grill-glow2", glow2);
 
     // 3. 불꽃 및 이펙트 강도 조절 (0.0 ~ 1.0)
-    const fireIntensity = (currentTemp - 1200) / 2300;
+    const fireIntensity = Math.min(1, (currentTemp - 1200) / 2300);
     document.documentElement.style.setProperty(
       "--fire-intensity",
       fireIntensity.toString(),
@@ -208,7 +210,7 @@ export function initPhase1() {
           bonus = Math.max(0, 100 - timeDiff / 10);
         }
         currentTemp += 50 + bonus;
-        if (currentTemp > 3500) currentTemp = 3500;
+        if (currentTemp > 100000) currentTemp = 100000;
         updateTemperatureUI();
       }
 

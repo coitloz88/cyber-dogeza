@@ -1360,7 +1360,17 @@ body.phase5 .grill::before {
   font-size: 1.3rem;
   z-index: 8;
   pointer-events: none;
-  animation: floatUp 2s ease-in forwards;
+  animation: fallDown 2s ease-in forwards;
+}
+@keyframes fallDown {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(140px) scale(1.1);
+    opacity: 0;
+  }
 }
 
 /* ===== Feathers / Clouds (Phase 4 ambient) ===== */

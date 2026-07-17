@@ -16,6 +16,8 @@ export function initPhase3() {
   document.getElementById("sweatEffect").textContent = "🍃";
   document.getElementById("tempLabel").textContent =
     translations[lang].receipt_forest;
+  document.getElementById("statusLabel").textContent =
+    translations[lang].receipt_status_v;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "100m";
@@ -93,7 +95,7 @@ export function initPhase3() {
     c.className = "creature";
 
     // 심림 맹수 확률 (깊이에 비례)
-    let ratio = (currentDepth - 100) / 2400;
+    let ratio = Math.min(1, (currentDepth - 100) / 2400);
     if (Math.random() < ratio) {
       c.textContent =
         nightBeasts[Math.floor(Math.random() * nightBeasts.length)];
@@ -161,7 +163,7 @@ export function initPhase3() {
           bonus = Math.max(0, 100 - timeDiff / 10);
         }
         currentDepth += 50 + bonus;
-        if (currentDepth > 3500) currentDepth = 3500;
+        if (currentDepth > 100000) currentDepth = 100000;
         updateForestUI();
       }
 
