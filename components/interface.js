@@ -10,54 +10,110 @@ export function lerpColor(c1, c2, ratio) {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
 
-export const apologies = [
-  "정말로 죄송합니다",
-  "두 번 다시 안 하겠습니다",
-  "AI 봉인 완료",
-  "레포 청소하겠습니다",
-  "PR 닫겠습니다 전부",
-  "용서해주십시오",
-  "제 잘못입니다",
-  "사실 재밌었어",
-  "申し訳ございません",
-];
+import { lang } from "./i18n.js";
 
-export const celebrations = [
-  "감사합니다",
-  "용서받았다",
-  "이거지예",
-  "ㄹㅇㅋㅋ",
-  "ありがとうございます",
-  "평화로다",
-  "108배 ✓",
-  "善哉善哉",
-  "해탈",
-];
+const apologiesMap = {
+  ko: [
+    "정말로 죄송합니다",
+    "두 번 다시 안 하겠습니다",
+    "AI 봉인 완료",
+    "레포 청소하겠습니다",
+    "PR 닫겠습니다 전부",
+    "용서해주십시오",
+    "제 잘못입니다",
+    "사실 재밌었어",
+    "申し訳ございません",
+  ],
+  ja: [
+    "本当に申し訳ございません",
+    "二度といたしません",
+    "AI封印完了",
+    "リポジトリを掃除します",
+    "PRは全て閉じます",
+    "お許しください",
+    "私の責任です",
+    "実は楽しかった",
+    "本当に申し訳ございません",
+  ],
+};
 
-export const phase1Locations = [
-  "불판 위",
-  "Tefal 프라이팬 위",
-  "LG 광파오븐 안",
-  "용광로 앞",
-  "에어프라이어 안",
-  "바베큐 그릴 위",
-  "전자레인지 한가운데",
-  "가스레인지 화구 위",
-];
+const celebrationsMap = {
+  ko: [
+    "감사합니다",
+    "용서받았다",
+    "이거지예",
+    "ㄹㅇㅋㅋ",
+    "ありがとうございます",
+    "평화로다",
+    "108배 ✓",
+    "善哉善哉",
+    "해탈",
+  ],
+  ja: [
+    "ありがとうございます",
+    "許された",
+    "これだね",
+    "草",
+    "ありがとうございます",
+    "平和なり",
+    "108回 ✓",
+    "善きかな",
+    "解脱",
+  ],
+};
 
-export const phase2Locations = [
-  "마리아나 해구",
-  "태평양 심해",
-  "버뮤다 삼각지대",
-  "챌린저 해연",
-  "타이타닉호 근처",
-  "해왕성 바다",
-  "동해 앞바다 1000m",
-  "인어공주 앞마당",
-];
+export const apologies = apologiesMap[lang] || apologiesMap.ko;
+export const celebrations = celebrationsMap[lang] || celebrationsMap.ko;
+
+const phase1LocationsMap = {
+  ko: [
+    "불판 위",
+    "Tefal 프라이팬 위",
+    "LG 광파오븐 안",
+    "용광로 앞",
+    "에어프라이어 안",
+    "바베큐 그릴 위",
+    "전자레인지 한가운데",
+    "가스레인지 화구 위",
+  ],
+  ja: [
+    "鉄板の上",
+    "Tefalフライパンの上",
+    "LGオーブンの中",
+    "溶鉱炉の前",
+    "ノンフライヤーの中",
+    "バーベキューグリルの上",
+    "電子レンジのど真ん中",
+    "ガスコンロの五徳の上",
+  ],
+};
+
+const phase2LocationsMap = {
+  ko: [
+    "마리아나 해구",
+    "태평양 심해",
+    "버뮤다 삼각지대",
+    "챌린저 해연",
+    "타이타닉호 근처",
+    "해왕성 바다",
+    "동해 앞바다 1000m",
+    "인어공주 앞마당",
+  ],
+  ja: [
+    "マリアナ海溝",
+    "太平洋の深海",
+    "バミューダトライアングル",
+    "チャレンジャー海淵",
+    "タイタニック号の近く",
+    "海王星の海",
+    "日本海沖 1000m",
+    "人魚姫の前庭",
+  ],
+};
 
 export function getRandomLocation(phase) {
-  const arr = phase === 1 ? phase1Locations : phase2Locations;
+  const map = phase === 1 ? phase1LocationsMap : phase2LocationsMap;
+  const arr = map[lang] || map.ko;
   return arr[Math.floor(Math.random() * arr.length)];
 }
 

@@ -1,6 +1,7 @@
 import { lerpColor, getRandomLocation } from "./interface.js";
 import { PhaseController } from "./core.js";
 import { initPhase2 } from "./phase2.js";
+import { lang, translations } from "./i18n.js";
 
 let emberInterval;
 
@@ -9,15 +10,14 @@ export function initPhase1() {
   document.body.style.background = "";
 
   // UI Setup for Phase 1
-  document.getElementById("mainTitle").innerHTML =
-    '사이버<span class="stamp" id="titleStamp">불판</span>도게자';
+  document.title = translations[lang].title;
+  document.getElementById("mainTitle").innerHTML = translations[lang].h1_p1;
   document.getElementById("location").textContent = getRandomLocation(1);
   document.getElementById("sweatEffect").textContent = "💦";
   document.getElementById("divingMask").classList.remove("fly-away");
   document.getElementById("divingMask").style.display = "none";
-  document.querySelector(
-    ".receipt .row:nth-child(4) span:first-child",
-  ).textContent = "온도";
+  document.getElementById("tempLabel").textContent =
+    translations[lang].receipt_temp;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "1200°C";
@@ -225,7 +225,7 @@ export function initPhase1() {
       const nextBtn = document.createElement("button");
       nextBtn.className = "bow-btn";
       nextBtn.id = "nextPhaseBtn";
-      nextBtn.textContent = "물 속으로 이동";
+      nextBtn.textContent = translations[lang].btn_to_water;
       nextBtn.style.background = "linear-gradient(180deg, #002244, #004466)";
       nextBtn.style.borderColor = "#00fff0";
       nextBtn.style.display = "none";

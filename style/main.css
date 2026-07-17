@@ -44,7 +44,8 @@ body::before {
     rgba(0, 0, 0, 0) 4px
   );
   pointer-events: none;
-  z-index: 50; pointer-events: none;
+  z-index: 50;
+  pointer-events: none;
   mix-blend-mode: multiply;
 }
 body::after {
@@ -57,11 +58,13 @@ body::after {
     rgba(0, 0, 0, 0.85) 100%
   );
   pointer-events: none;
-  z-index: 49; pointer-events: none;
+  z-index: 49;
+  pointer-events: none;
 }
 
 /* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
-.scene { pointer-events: none;
+.scene {
+  pointer-events: none;
   position: absolute;
   inset: 0;
 }
@@ -481,7 +484,8 @@ body.phase2 .sweat {
 }
 
 /* ===== Bottom panel (OUTSIDE .scene — doesn't shake) ===== */
-.panel { pointer-events: none;
+.panel {
+  pointer-events: none;
   position: absolute;
   left: 50%;
   bottom: max(1rem, env(safe-area-inset-bottom));
@@ -602,7 +606,8 @@ button.bow-btn:active {
   position: fixed;
   inset: 0;
   background: white;
-  z-index: 100; pointer-events: none;
+  z-index: 100;
+  pointer-events: none;
   pointer-events: none;
   opacity: 0;
 }
@@ -993,7 +998,63 @@ body.phase2::after {
   );
 }
 body.phase2 .grill {
-  display: none;
+  --grill-c1: #dff4ff;
+  --grill-c2: #9fd8f0;
+  --grill-c3: #5aa8d8;
+  --grill-glow1: rgba(220, 245, 255, 0.8);
+  --grill-glow2: rgba(80, 200, 255, 0.55);
+  overflow: hidden;
+}
+body.phase2 .grill::before {
+  background: repeating-linear-gradient(
+    115deg,
+    transparent 0,
+    transparent 26px,
+    rgba(255, 255, 255, 0.55) 26px,
+    rgba(255, 255, 255, 0.55) 28px
+  );
+}
+
+.snowflake {
+  position: fixed;
+  top: -40px;
+  z-index: 7;
+  pointer-events: none;
+  color: #dff4ff;
+  text-shadow: 0 0 6px rgba(160, 230, 255, 0.8);
+}
+
+.ice-crack {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(160, 230, 255, 0.4)
+  );
+  box-shadow:
+    -6px 4px 0 -1px rgba(255, 255, 255, 0.7),
+    7px 9px 0 -1px rgba(255, 255, 255, 0.6),
+    -12px 14px 0 -1px rgba(255, 255, 255, 0.4);
+  transform-origin: top center;
+  animation: crackGrow 0.7s ease-out forwards;
+}
+@keyframes crackGrow {
+  0% {
+    transform: scaleY(0) rotate(8deg);
+    opacity: 1;
+  }
+  40% {
+    transform: scaleY(1) rotate(8deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1) rotate(8deg);
+    opacity: 0;
+  }
 }
 body.phase2 .grid {
   background-image:

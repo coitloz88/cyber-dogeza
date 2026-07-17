@@ -1,4 +1,5 @@
 import { playChime, spawnPetal, apologies, celebrations } from "./interface.js";
+import { lang, translations } from "./i18n.js";
 
 // 글로벌 상태 (Phase 간 유지)
 export const globalState = {
@@ -47,6 +48,7 @@ export class PhaseController {
     this.countEl = document.getElementById("count");
     this.timerEl = document.getElementById("timer");
     this.dogeza = document.getElementById("dogeza");
+    this.dogezaEmoji = document.getElementById("dogezaEmoji");
     this.scene = document.getElementById("scene");
     this.impactLines = document.querySelector(".impact-lines");
     this.btn = document.getElementById("bowBtn");
@@ -71,7 +73,9 @@ export class PhaseController {
     // Timer interval (Global timer)
     this.intervals.push(
       setInterval(() => {
-        const elapsed = Math.floor((Date.now() - globalState.globalStartTime) / 1000);
+        const elapsed = Math.floor(
+          (Date.now() - globalState.globalStartTime) / 1000,
+        );
         const m = Math.floor(elapsed / 60);
         const s = elapsed % 60;
         if (this.timerEl) {
@@ -93,7 +97,7 @@ export class PhaseController {
     this._handleBow = this.handleBow.bind(this);
     if (this.btn) {
       this.btn.addEventListener("click", this._handleBow);
-      this.btn.textContent = "한 번 더 사죄";
+      this.btn.textContent = translations[lang].btn_bow;
     }
   }
 
@@ -167,7 +171,7 @@ export class PhaseController {
     setTimeout(() => flash.remove(), 1900);
 
     document.body.classList.add("liberated");
-    if (this.dogeza) this.dogeza.textContent = "🙏";
+    if (this.dogezaEmoji) this.dogezaEmoji.textContent = "🙏";
 
     playChime();
 
@@ -175,16 +179,13 @@ export class PhaseController {
     this.intervals.push(petalInterval);
     setTimeout(() => clearInterval(petalInterval), 10000);
     for (let i = 0; i < 30; i++) {
-      const tid = setTimeout(spawnPetal, i * 40);
-      // We could track these timeouts if we wanted to be extremely robust,
-      // but they finish in 1.2s. Still, let's track them.
-      // Wait, let's just clear petals in cleanup and also ensure no new ones show.
+      setTimeout(spawnPetal, i * 40);
     }
 
     if (this.btn) {
       this.btn.style.display = "none"; // Hide initially
       setTimeout(() => {
-        this.btn.textContent = "계속 감사하기";
+        this.btn.textContent = translations[lang].btn_thanks;
         this.btn.style.display = "inline-block";
       }, 3000);
     }
@@ -238,11 +239,12 @@ export class PhaseController {
     document.body.classList.remove("liberated");
 
     // reset visual states
-    if (this.dogeza) {
-      // restore the mask inside if it existed
-      const maskHtml = `<div class="diving-mask" id="divingMask">🤿</div>`;
-      this.dogeza.innerHTML = `🙇\n${maskHtml}`;
-      this.dogeza.className = "dogeza";
+    if (this.dogezaEmoji) this.dogezaEmoji.textContent = "🙇";
+    if (this.dogeza) this.dogeza.className = "dogeza";
+    const mask = document.getElementById("divingMask");
+    if (mask) {
+      mask.classList.remove("fly-away");
+      mask.style.display = "none";
     }
 
     // fade out petals

@@ -1,20 +1,21 @@
 import { lerpColor, getRandomLocation } from "./interface.js";
 import { PhaseController } from "./core.js";
 import { initPhase1 } from "./phase1.js";
+import { lang, translations } from "./i18n.js";
 
 let fishInterval;
+let snowInterval;
 
 export function initPhase2() {
   document.body.className = "phase2";
 
   // UI Setup for Phase 2
-  document.getElementById("mainTitle").innerHTML =
-    '사이버<span class="stamp" id="titleStamp" style="color:#00fff0; text-shadow:0 0 12px #00fff0;">수중</span>도게자';
+  document.title = translations[lang].title_p2;
+  document.getElementById("mainTitle").innerHTML = translations[lang].h1_p2;
   document.getElementById("location").textContent = getRandomLocation(2);
   document.getElementById("sweatEffect").textContent = "🫧";
-  document.querySelector(
-    ".receipt .row:nth-child(4) span:first-child",
-  ).textContent = "수심";
+  document.getElementById("tempLabel").textContent =
+    translations[lang].receipt_depth;
 
   const tempEl = document.getElementById("temperature");
   tempEl.textContent = "1000m";
@@ -49,7 +50,8 @@ export function initPhase2() {
     document.body.style.background = `linear-gradient(180deg, ${topColor} 0%, ${bottomColor} 100%)`;
 
     if (controller.isLiberated) {
-      overlay.style.background = "radial-gradient(ellipse at center, transparent 30%, rgba(0, 255, 200, 0.4) 100%)";
+      overlay.style.background =
+        "radial-gradient(ellipse at center, transparent 30%, rgba(0, 255, 200, 0.4) 100%)";
       overlay.style.opacity = "1";
     } else {
       overlay.style.background = "black";
@@ -82,6 +84,16 @@ export function initPhase2() {
     setTimeout(() => {
       if (b.parentNode) b.remove();
     }, 2000);
+  }
+
+  function crackIce() {
+    const grill = document.querySelector(".grill");
+    if (!grill) return;
+    const crack = document.createElement("div");
+    crack.className = "ice-crack";
+    crack.style.left = 20 + Math.random() * 60 + "%";
+    grill.appendChild(crack);
+    setTimeout(() => crack.remove(), 700);
   }
 
   function spawnFish() {
@@ -124,6 +136,29 @@ export function initPhase2() {
   }
   fishInterval = setInterval(spawnFish, 3000);
 
+  function spawnSnow() {
+    const s = document.createElement("div");
+    s.className = "snowflake";
+    s.textContent = ["❄️", "❅", "❆"][Math.floor(Math.random() * 3)];
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.fontSize = 0.5 + Math.random() * 0.9 + "rem";
+    document.body.appendChild(s);
+
+    const drift = (Math.random() - 0.5) * 120;
+    const dur = 8000 + Math.random() * 6000;
+    s.animate(
+      [
+        { transform: "translate(0, 0) rotate(0deg)", opacity: 0.9 },
+        {
+          transform: `translate(${drift}px, 105vh) rotate(${(Math.random() - 0.5) * 360}deg)`,
+          opacity: 0.2,
+        },
+      ],
+      { duration: dur, easing: "linear" },
+    ).onfinish = () => s.remove();
+  }
+  snowInterval = setInterval(spawnSnow, 600);
+
   const controller = new PhaseController({
     phaseName: "Phase2",
     maxCount: 108,
@@ -160,6 +195,8 @@ export function initPhase2() {
           dogezaRect.top + Math.random() * 50,
         );
       }
+
+      crackIce();
     },
     onLiberate: () => {
       currentDepth = 0;
@@ -176,7 +213,7 @@ export function initPhase2() {
       const nextBtn = document.createElement("button");
       nextBtn.className = "bow-btn";
       nextBtn.id = "nextPhaseBtn";
-      nextBtn.textContent = "불 속으로 이동";
+      nextBtn.textContent = translations[lang].btn_to_fire;
       nextBtn.style.background = "linear-gradient(180deg, #3a0e08, #1a0a08)";
       nextBtn.style.borderColor = "#c8102e";
       nextBtn.style.display = "none";
@@ -193,6 +230,7 @@ export function initPhase2() {
     },
     onCleanup: () => {
       clearInterval(fishInterval);
+      clearInterval(snowInterval);
       document.removeEventListener("click", clickEffect);
       overlay.remove();
 
@@ -200,7 +238,10 @@ export function initPhase2() {
       if (nextBtn) nextBtn.remove();
 
       // 물고기 정리
-      document.querySelectorAll(".fish, .bubble").forEach((el) => el.remove());
+      document
+        .querySelectorAll(".fish, .bubble, .snowflake")
+        .forEach((el) => el.remove());
+      document.querySelectorAll(".ice-crack").forEach((el) => el.remove());
     },
   });
 
