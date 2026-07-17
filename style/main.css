@@ -17,11 +17,18 @@
 html,
 body {
   height: 100%;
+  min-height: 100%;
   overflow: hidden;
   background: var(--ink);
   color: var(--bone);
   font-family: "Noto Serif KR", serif;
   cursor: crosshair;
+  word-break: keep-all;
+}
+body {
+  position: relative;
+  height: 100vh;
+  min-height: 100vh;
 }
 
 /* ===== Scanline + CRT vignette (overlay, never shakes) ===== */
@@ -38,6 +45,7 @@ body::before {
   );
   pointer-events: none;
   z-index: 50;
+  pointer-events: none;
   mix-blend-mode: multiply;
 }
 body::after {
@@ -51,11 +59,13 @@ body::after {
   );
   pointer-events: none;
   z-index: 49;
+  pointer-events: none;
 }
 
 /* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
 .scene {
-  position: fixed;
+  pointer-events: none;
+  position: absolute;
   inset: 0;
 }
 .scene.shake {
@@ -284,6 +294,7 @@ h1 {
   line-height: 0.95;
   text-align: center;
   color: var(--bone);
+  white-space: nowrap;
   text-shadow:
     0 0 1px var(--blood),
     0 0 20px rgba(255, 100, 30, 0.6),
@@ -334,6 +345,28 @@ h1::before {
   }
 }
 
+body.phase2 .sweat {
+  animation: bubbleRise 2s ease-in infinite;
+}
+@keyframes bubbleRise {
+  0% {
+    transform: translateY(10px) scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(0px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-40px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-60px) scale(1.2);
+    opacity: 0;
+  }
+}
+
 /* ===== Dogeza figure ===== */
 .figure-wrap {
   position: absolute;
@@ -346,6 +379,7 @@ h1::before {
 }
 
 .dogeza {
+  position: relative;
   font-size: clamp(7rem, 16vw, 12rem);
   line-height: 1;
   display: inline-block;
@@ -451,7 +485,8 @@ h1::before {
 
 /* ===== Bottom panel (OUTSIDE .scene — doesn't shake) ===== */
 .panel {
-  position: fixed;
+  pointer-events: none;
+  position: absolute;
   left: 50%;
   bottom: max(1rem, env(safe-area-inset-bottom));
   transform: translateX(-50%);
@@ -573,6 +608,7 @@ button.bow-btn:active {
   background: white;
   z-index: 100;
   pointer-events: none;
+  pointer-events: none;
   opacity: 0;
 }
 .liberation-flash.go {
@@ -667,6 +703,13 @@ body.liberated::after {
     rgba(255, 220, 150, 0.25) 100%
   );
   transition: background 3s ease;
+}
+body.phase2.liberated::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 255, 240, 0.15) 100%
+  );
 }
 body.liberated .glow {
   background: radial-gradient(
@@ -832,4 +875,302 @@ body.liberated button.bow-btn {
     font-size: 0.85rem;
     padding: 7px 18px;
   }
+}
+
+@supports (height: 100svh) {
+  body {
+    height: 100svh;
+    min-height: 100svh;
+  }
+  .stage {
+    padding: 4svh 2rem 0;
+  }
+  .figure-wrap {
+    bottom: 10svh;
+  }
+  .grill {
+    bottom: 6svh;
+  }
+  @media (max-width: 720px) {
+    .figure-wrap {
+      bottom: 13svh;
+    }
+    .grill {
+      bottom: 10svh;
+    }
+  }
+}
+
+/* ===== Diving Mask (🤿) ===== */
+.diving-mask {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.6em; /* relative to dogeza emoji */
+  display: none; /* Only visible in Phase 2 */
+  pointer-events: none;
+  z-index: 10;
+}
+.diving-mask.fly-away {
+  display: block;
+  animation: flyAway 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes flyAway {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(200%, -500%) rotate(360deg) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ===== Score Board ===== */
+.score-board {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: "DotGothic16", monospace;
+  pointer-events: none;
+}
+.score-label {
+  color: var(--neon);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 0 8px var(--neon);
+}
+.score-value {
+  display: flex;
+  gap: 2px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    0 0 10px #00fff0,
+    0 0 20px #00fff0;
+}
+.score-value span {
+  display: inline-block;
+  transition: color 0.1s;
+}
+.score-value span.flash-shake {
+  animation: flashShake 0.3s ease-out;
+  color: #fff2c4;
+  text-shadow:
+    0 0 15px #ffd966,
+    0 0 25px #ffb347;
+}
+@keyframes flashShake {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  25% {
+    transform: scale(1.2) translateY(-4px);
+  }
+  50% {
+    transform: scale(1.1) translateY(2px);
+  }
+  75% {
+    transform: scale(1.15) translateY(-2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ===== Phase 2 Background/Colors ===== */
+body.phase2 {
+  --ink: #0b3a7a;
+  background: var(--ink);
+}
+body.phase2::after {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 140, 200, 0.12) 0%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+body.phase2 .grill {
+  --grill-c1: #dff4ff;
+  --grill-c2: #9fd8f0;
+  --grill-c3: #5aa8d8;
+  --grill-glow1: rgba(220, 245, 255, 0.8);
+  --grill-glow2: rgba(80, 200, 255, 0.55);
+  overflow: hidden;
+}
+body.phase2 .grill::before {
+  background: repeating-linear-gradient(
+    115deg,
+    transparent 0,
+    transparent 26px,
+    rgba(255, 255, 255, 0.55) 26px,
+    rgba(255, 255, 255, 0.55) 28px
+  );
+}
+
+.snowflake {
+  position: fixed;
+  top: -40px;
+  z-index: 7;
+  pointer-events: none;
+  color: #dff4ff;
+  text-shadow: 0 0 6px rgba(160, 230, 255, 0.8);
+}
+
+.ice-crack {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(160, 230, 255, 0.4)
+  );
+  box-shadow:
+    -6px 4px 0 -1px rgba(255, 255, 255, 0.7),
+    7px 9px 0 -1px rgba(255, 255, 255, 0.6),
+    -12px 14px 0 -1px rgba(255, 255, 255, 0.4);
+  transform-origin: top center;
+  animation: crackGrow 0.7s ease-out forwards;
+}
+@keyframes crackGrow {
+  0% {
+    transform: scaleY(0) rotate(8deg);
+    opacity: 1;
+  }
+  40% {
+    transform: scaleY(1) rotate(8deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1) rotate(8deg);
+    opacity: 0;
+  }
+}
+body.phase2 .grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 240, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 240, 0.1) 1px, transparent 1px);
+}
+body.phase2 .glow {
+  background: radial-gradient(
+    ellipse at center top,
+    transparent 0%,
+    transparent 35%,
+    #004466 60%,
+    #001133 90%
+  );
+  animation: pulseWater 4s ease-in-out infinite alternate;
+}
+@keyframes pulseWater {
+  from {
+    opacity: 0.4;
+    transform: scaleY(0.95);
+  }
+  to {
+    opacity: 0.7;
+    transform: scaleY(1.05);
+  }
+}
+
+/* ===== Fish ===== */
+.fish {
+  position: absolute;
+  font-size: 2rem;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 240, 0.5));
+}
+@keyframes swimLeft {
+  from {
+    transform: translateX(100vw) translateY(0);
+  }
+  to {
+    transform: translateX(-20vw) translateY(20px);
+  }
+}
+@keyframes swimRight {
+  from {
+    transform: translateX(-20vw) translateY(0) scaleX(-1);
+  }
+  to {
+    transform: translateX(100vw) translateY(-20px) scaleX(-1);
+  }
+}
+
+/* ===== Bubbles ===== */
+.bubble {
+  position: absolute;
+  font-size: 1.5rem;
+  z-index: 8;
+  pointer-events: none;
+  animation: floatUp 2s ease-in forwards;
+}
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* ===== Mobile Score Board adjustments ===== */
+@media (max-width: 720px) {
+  .score-board {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-top: 1rem;
+    align-items: center;
+    transform: none;
+  }
+  .score-value {
+    font-size: 2rem;
+  }
+}
+
+/* ===== Additional style tweaks ===== */
+.scene.shake.water {
+  animation: screenShakeWater 0.4s ease-in-out;
+}
+@keyframes screenShakeWater {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-3px, 4px) rotate(-0.5deg);
+  }
+  50% {
+    transform: translate(4px, -3px) rotate(0.4deg);
+  }
+  75% {
+    transform: translate(-2px, 2px);
+  }
+}
+
+.depth-overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s linear;
+}
+.panel * {
+  pointer-events: auto;
 }

@@ -65,6 +65,58 @@ const celebrationsMap = {
 export const apologies = apologiesMap[lang] || apologiesMap.ko;
 export const celebrations = celebrationsMap[lang] || celebrationsMap.ko;
 
+const phase1LocationsMap = {
+  ko: [
+    "불판 위",
+    "Tefal 프라이팬 위",
+    "LG 광파오븐 안",
+    "용광로 앞",
+    "에어프라이어 안",
+    "바베큐 그릴 위",
+    "전자레인지 한가운데",
+    "가스레인지 화구 위",
+  ],
+  ja: [
+    "鉄板の上",
+    "Tefalフライパンの上",
+    "LGオーブンの中",
+    "溶鉱炉の前",
+    "ノンフライヤーの中",
+    "バーベキューグリルの上",
+    "電子レンジのど真ん中",
+    "ガスコンロの五徳の上",
+  ],
+};
+
+const phase2LocationsMap = {
+  ko: [
+    "마리아나 해구",
+    "태평양 심해",
+    "버뮤다 삼각지대",
+    "챌린저 해연",
+    "타이타닉호 근처",
+    "해왕성 바다",
+    "동해 앞바다 1000m",
+    "인어공주 앞마당",
+  ],
+  ja: [
+    "マリアナ海溝",
+    "太平洋の深海",
+    "バミューダトライアングル",
+    "チャレンジャー海淵",
+    "タイタニック号の近く",
+    "海王星の海",
+    "日本海沖 1000m",
+    "人魚姫の前庭",
+  ],
+};
+
+export function getRandomLocation(phase) {
+  const map = phase === 1 ? phase1LocationsMap : phase2LocationsMap;
+  const arr = map[lang] || map.ko;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 // ===== 빰빠바밤 (Web Audio API로 합성) =====
 export function playChime() {
   try {
