@@ -45,8 +45,6 @@ body::before {
   );
   pointer-events: none;
   z-index: 50;
-  pointer-events: none;
-  mix-blend-mode: multiply;
 }
 body::after {
   content: "";
@@ -59,7 +57,6 @@ body::after {
   );
   pointer-events: none;
   z-index: 49;
-  pointer-events: none;
 }
 
 /* ===== Scene wrapper (everything shakes EXCEPT the button) ===== */
@@ -97,21 +94,28 @@ body::after {
 .grid {
   position: fixed;
   inset: 0;
+  transform: perspective(600px) rotateX(60deg) translateY(20%);
+  transform-origin: center bottom;
+  z-index: 1;
+  overflow: hidden;
+}
+.grid::before {
+  content: "";
+  position: absolute;
+  inset: -40px 0 0 0;
   background-image:
     linear-gradient(rgba(255, 90, 30, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 90, 30, 0.06) 1px, transparent 1px);
   background-size: 40px 40px;
-  transform: perspective(600px) rotateX(60deg) translateY(20%);
-  transform-origin: center bottom;
-  z-index: 1;
   animation: gridShift 8s linear infinite;
+  will-change: transform;
 }
 @keyframes gridShift {
   0% {
-    background-position: 0 0;
+    transform: translateY(0);
   }
   100% {
-    background-position: 0 40px;
+    transform: translateY(40px);
   }
 }
 
@@ -133,6 +137,7 @@ body::after {
   opacity: 0.7;
   z-index: 2;
   animation: pulse 3s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
 @keyframes pulse {
   from {
@@ -175,6 +180,7 @@ body::after {
   border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
   mix-blend-mode: screen;
   animation: flicker 1.2s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
 @keyframes flicker {
   0% {
@@ -388,6 +394,7 @@ body.phase2 .sweat {
   filter: drop-shadow(0 0 12px var(--dogeza-glow1, rgba(255, 130, 30, 0.9)))
     drop-shadow(0 0 32px var(--dogeza-glow2, rgba(255, 60, 0, 0.7)))
     drop-shadow(0 -10px 24px var(--dogeza-glow3, rgba(255, 180, 30, 0.5)));
+  will-change: transform;
 }
 
 @keyframes tremor {
@@ -803,6 +810,10 @@ body.liberated button.bow-btn {
     display: none;
   }
 
+  .flame {
+    mix-blend-mode: normal;
+  }
+
   /* Receipt: 화면 상단 가로 스트립으로 변신 (count + timer만) */
   .receipt {
     position: fixed;
@@ -868,6 +879,7 @@ body.liberated button.bow-btn {
   }
   .dogeza {
     font-size: clamp(5.5rem, 26vw, 9rem);
+    filter: drop-shadow(0 0 16px var(--dogeza-glow1, rgba(255, 130, 30, 0.9)));
   }
 
   /* 버튼 슬림하게 */
@@ -1056,7 +1068,7 @@ body.phase2 .grill::before {
     opacity: 0;
   }
 }
-body.phase2 .grid {
+body.phase2 .grid::before {
   background-image:
     linear-gradient(rgba(0, 255, 240, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 240, 0.1) 1px, transparent 1px);
