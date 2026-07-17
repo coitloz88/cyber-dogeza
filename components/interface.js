@@ -111,8 +111,38 @@ const phase2LocationsMap = {
   ],
 };
 
+const phase3LocationsMap = {
+  ko: [
+    "아마존 정글",
+    "시베리아 타이가",
+    "보르네오 정글",
+    "지리산 반달곰 앞",
+    "세쿼이아 숲",
+    "판다 옆 대나무숲",
+    "팅커벨 요정의 숲",
+    "버섯 왕국",
+  ],
+  ja: [
+    "アマゾンジャングル",
+    "シベリアタイガ",
+    "ボルネオのジャングル",
+    "智異山ツキノワグマの前",
+    "セコイアの森",
+    "パンダの隣の竹林",
+    "ティンカーベルの妖精の森",
+    "キノコ王国",
+  ],
+};
+
 export function getRandomLocation(phase) {
-  const map = phase === 1 ? phase1LocationsMap : phase2LocationsMap;
+  let map;
+  if (phase === 1) {
+    map = phase1LocationsMap;
+  } else if (phase === 2) {
+    map = phase2LocationsMap;
+  } else {
+    map = phase3LocationsMap;
+  }
   const arr = map[lang] || map.ko;
   return arr[Math.floor(Math.random() * arr.length)];
 }

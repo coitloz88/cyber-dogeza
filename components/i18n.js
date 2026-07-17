@@ -4,10 +4,13 @@ export const translations = {
   ko: {
     title: "사이버 불판 도게자 — 긴급 사죄 방송",
     title_p2: "사이버 수중 도게자 — 긴급 사죄 방송",
+    title_p3: "사이버 숲속 도게자 — 긴급 사죄 방송",
     badge: "⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠",
     h1_p1: '사이버<span class="stamp" id="titleStamp">불판</span>도게자',
     h1_p2:
       '사이버<span class="stamp" id="titleStamp" style="color:#00fff0; text-shadow:0 0 12px #00fff0;">수중</span>도게자',
+    h1_p3:
+      '사이버<span class="stamp" id="titleStamp" style="color:#7ade4a; text-shadow:0 0 12px #4ade80;">숲속</span>도게자',
     subtitle: '[ 진심사죄 모드 가동중<span class="blink">_</span> ]',
     label_evidence: "사건 경위 / EVIDENCE",
     evidence_1: "AI 에이전트로 PR 양산<br />",
@@ -22,6 +25,7 @@ export const translations = {
     receipt_attacker_v: "나",
     receipt_temp: "온도",
     receipt_depth: "수심",
+    receipt_forest: "숲 깊이",
     receipt_location: "장소",
     receipt_status: "상태",
     receipt_status_v: "정좌중",
@@ -32,6 +36,7 @@ export const translations = {
     btn_thanks: "계속 감사하기",
     btn_to_water: "물 속으로 이동",
     btn_to_fire: "불 속으로 이동",
+    btn_to_forest: "숲 속으로 이동",
     lib_big: "解 脱",
     lib_sub: "108배 완료 · 사죄가 받아들여졌습니다",
     lib_en: "LIBERATION ACHIEVED",
@@ -39,10 +44,13 @@ export const translations = {
   ja: {
     title: "サイバー鉄板土下座 — 緊急謝罪放送",
     title_p2: "サイバー水中土下座 — 緊急謝罪放送",
+    title_p3: "サイバー森林土下座 — 緊急謝罪放送",
     badge: "⚠ EMERGENCY BROADCAST · 緊急謝罪 ⚠",
     h1_p1: 'サイバー<span class="stamp" id="titleStamp">鉄板</span>土下座',
     h1_p2:
       'サイバー<span class="stamp" id="titleStamp" style="color:#00fff0; text-shadow:0 0 12px #00fff0;">水中</span>土下座',
+    h1_p3:
+      'サイバー<span class="stamp" id="titleStamp" style="color:#7ade4a; text-shadow:0 0 12px #4ade80;">森林</span>土下座',
     subtitle: '[ 本気謝罪モード稼働中<span class="blink">_</span> ]',
     label_evidence: "事件の経緯 / EVIDENCE",
     evidence_1: "AIエージェントでPR量産<br />",
@@ -57,6 +65,7 @@ export const translations = {
     receipt_attacker_v: "私",
     receipt_temp: "温度",
     receipt_depth: "水深",
+    receipt_forest: "森の深さ",
     receipt_location: "場所",
     receipt_status: "状態",
     receipt_status_v: "正座中",
@@ -67,6 +76,7 @@ export const translations = {
     btn_thanks: "感謝し続ける",
     btn_to_water: "水の中へ移動",
     btn_to_fire: "火の中へ移動",
+    btn_to_forest: "森の中へ移動",
     lib_big: "解 脱",
     lib_sub: "108回完了 · 謝罪が受け入れられました",
     lib_en: "LIBERATION ACHIEVED",
